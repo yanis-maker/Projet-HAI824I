@@ -56,51 +56,30 @@ public class Main {
 			cible.write(prop.getLocalName()+"\n");
 		}
 		
-		for(Property prop : propertiesFile1) {
+		/*for(Property prop : propertiesFile1) {
 			for(Property prop2 : propertiesFile2) {
 				if(prop.getLocalName().equals(prop2.getLocalName())) {
 					sameProp.write(prop.getLocalName()+"\n");
 				}
 			}
-		}
+		}*/
 		
 		
 
-		/*Scanner lire = new Scanner(System.in);
-		int choix = 0;
+		Scanner lire = new Scanner(System.in);
+		String choixProp = "";
 		int choixMesureSimilarite = 0;
-		System.out.println("Choisir le numéro correspondant à l'action que vous voulez effectuer");
-		System.out.println("1- Choix de propriétés à comparer\n"
-				+ "2- choix de mesure(s) de similarité entre les valeurs de ces propriétés\n"
-				+ "3- combinaison de plusieurs mesures de similarité (afin de prendre, par exemple, leur moyenne pondérée comme mesure finale)\n"
-				+ "4-choix du seuil de similarité");
-		choix = lire.nextInt();
-
-		switch (choix) {
+		System.out.println("Choix de propriétés à comparer");
+		choixProp = lire.next();
+		System.out.println("Choisissez la mesure de  similarité :\n"
+				+"-1 Identique\n -2 Token wise similar\n -3 Partially token-wise similar\n -4 accronyms abbreviations\n -5 Synonyms");
+		choixMesureSimilarite = lire.nextInt();
+		switch (choixMesureSimilarite) {
 		case 1:
 			break;
 
 		case 2:
-			System.out.println("Choisissez la mesure de  similarité");
-			choixMesureSimilarite = lire.nextInt();
-			switch (choixMesureSimilarite) {
-			case 1:
-
-				break;
-			case 2:
-
-				break;
-			case 3:
-
-				break;
-			case 4:
-
-				break;
-
-			default:
-				break;
-			}
-			break;
+			
 		case 3:
 
 			break;
@@ -110,7 +89,7 @@ public class Main {
 
 		default:
 			break;
-		}*/
+		}
 		
 		source.close();
 		cible.close();
