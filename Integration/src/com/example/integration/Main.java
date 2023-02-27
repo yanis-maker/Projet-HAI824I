@@ -1,4 +1,4 @@
-package tp2_Web_Semantic;
+package com.example.integration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,5 +83,6 @@ public class Main {
 	}
 
 }
+
 
 
