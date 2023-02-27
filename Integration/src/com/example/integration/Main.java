@@ -63,7 +63,19 @@ public class Main {
 				}
 			}
 		}*/
+		Map<Property,List<Resource>> listResourceFile1=new HashMap<Property,List<Resource>>();
 		
+		for(Property p : propertiesFile1) {
+			List<Resource> resource=new ArrayList<>();
+			modelFile1.listStatements().forEachRemaining(stmt->{
+				if(stmt.getPredicate().equals(p)) {
+					resource.add(stmt.getSubject());
+				}
+			});
+			System.out.println(p+ "\n" +resource);
+			System.out.println();
+			listResourceFile1.put(p,resource);
+		}
 		
 
 		Scanner lire = new Scanner(System.in);
