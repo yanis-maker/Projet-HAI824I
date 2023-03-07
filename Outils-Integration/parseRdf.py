@@ -1,25 +1,31 @@
 import rdflib as rdf
-grapheSource=rdf.Graph()
-grapheCible=rdf.Graph()
+from rdflib import Namespace, URIRef
 
-grapheSource.parse("file1.ttl",format="turtle")
-grapheCible.parse("file2.ttl",format="turtle")
+grapheSource = rdf.Graph()
+grapheCible = rdf.Graph()
 
+grapheSource.parse("source.ttl",format="turtle")
+grapheCible.parse("cible.ttl",format="turtle")
 
-listPropretiesSource = []
-listPropertiesCible = []
+propertySource=[]
+propertyCible=[]
 for s, p, o in grapheSource:
-    # namespace = grapheSource.namespace_manager.normalizeUri(p)
-    if p not in listPropretiesSource:
-        listPropretiesSource.append(p)
-
+    namespace=grapheSource.namespace_manager.normalizeUri(p)
+    if namespace not in propertySource:
+      propertySource.append(namespace)
 
 for s, p, o in grapheCible:
-    # namespace = grapheSource.namespace_manager.normalizeUri(p)
-    if p not in listPropertiesCible:
-        listPropertiesCible.append(p)
-
-for x in listPropertiesCible:
-    print(x)
+    namespace = grapheCible.namespace_manager.normalizeUri(p)
+    if namespace not in propertyCible:
+      propertyCible.append(namespace)
 
 
+commonProprety=propertySource
+for ps in propertySource:
+    for pc in propertyCible:
+        if ps!=pc and pc not in commonProprety:
+            commonProprety.append(pc)
+
+
+for x in commonProprety :
+  print(x)

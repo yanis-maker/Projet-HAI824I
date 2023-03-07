@@ -742,7 +742,7 @@
         efrbroo:R25_performed  <http://data.doremus.org/expression/7bf3fbda-bdbf-38e6-9476-77824bd13b77> .
 
 <http://data.doremus.org/event/514da2ea-5bd4-3ff9-81cd-a0332b7f05ba>
-        a                      g ;
+        a                      efrbroo:F28_Expression_Creation ;
         ecrm:P10_falls_within  [ a                         ecrm:E4_Period ;
                                  ecrm:P1_is_identified_by  "18 ème siècle"
                                ] ;
