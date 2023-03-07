@@ -1,4 +1,4 @@
-import rdflib
+import rdflib as rdf
 import tkinter as tk
 
 import command
