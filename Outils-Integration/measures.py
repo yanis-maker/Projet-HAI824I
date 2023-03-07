@@ -31,10 +31,25 @@ class Measures:
     def jaro(self,str1,str2):
         return jaro_winkler_similarity(str1,str2)
 
+    def monge_elkan(self,s1,s2,sim_func):
+        words1 = s1.split()
+        words2 = s2.split()
+        sim = 0
+        for w1 in words1:
+            max_sim = 0
+            for w2 in words2:
+                current_sim = sim_func(w1, w2)
+                if current_sim > max_sim:
+                    max_sim = current_sim
+            sim += max_sim
+        sim /= len(words1)
+        return sim
+
 
 
 m = Measures(0.8)
 print("afficher ", m.jaro("Amadeus Mozart", "A.Mozart"))
+print("afficher ", m.monge_elkan("hello world", "hola mundo", jaro_winkler_similarity))
 
 
 
