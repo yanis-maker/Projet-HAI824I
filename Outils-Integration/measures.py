@@ -5,8 +5,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 from scipy.spatial.distance import hamming
 
-
-
 class Measures :
     def __init__(self,seuil):
         self.seuil=seuil
