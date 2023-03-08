@@ -14,20 +14,20 @@ class Measures :
         str2NGram=list(nltk.ngrams(str2.lower(),n))
         compteur=0
         for item in str1NGram:
-        if item in str2NGram:
-            compteur=+1
+            if item in str2NGram:
+                compteur=+1
         minLen=min(len(str1NGram),len(str2NGram))
         div=minLen-n+1
         if(div != 0):
-        return (compteur/div)
+            return (compteur/div)
         else :
-        return 0.0
+            return 0.0
     
     def identity(self,str1,str2):
         if str1==str2 :
-        return 1.0
+            return 1.0
         else :
-        return 0.0
+            return 0.0
 
     def jaccard(self,expr1,expr2,n):
         expr1=expr1.lower()
@@ -114,14 +114,14 @@ class Measures :
         return sim
 
 
-    m= Measures(3)
+m= Measures(3)
 
-    print(m.jaccard("amadus mozart","a.mozart",3))
-    print(m.jaro_similarity("amadus mozart","a.mozart"))
-    print(m.jaroWinkler("amadus mozart","a.mozart"))
-    print(m.monge_elkan("amadus mozart","a.mozart",jaro_winkler_similarity))
-    print(m.levenshtein("amadus mozart","a.mozart"))
-    print(m.qGrams("amadus mozart","a.mozart",3))
+print(m.jaccard("amadus mozart","a.mozart",3))
+print(m.jaro_similarity("amadus mozart","a.mozart"))
+print(m.jaroWinkler("amadus mozart","a.mozart"))
+print(m.monge_elkan("amadus mozart","a.mozart",jaro_winkler_similarity))
+print(m.levenshtein("amadus mozart","a.mozart"))
+print(m.qGrams("amadus mozart","a.mozart",3))
 
 
 
