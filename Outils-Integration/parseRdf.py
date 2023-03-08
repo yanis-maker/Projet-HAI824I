@@ -20,7 +20,6 @@ def parseSource():
 
     return propertySource
 
-
 def parseCible():
     propertyCible = []
 
@@ -30,7 +29,6 @@ def parseCible():
             propertyCible.append(namespace)
 
     return propertyCible
-
 
 def getAllProperty():
     propertySource = parseSource()
@@ -45,7 +43,6 @@ def getAllProperty():
         print(x)
 
     return commonProprety
-
 
 def getSubObjSource(property, graph):
     namespace=None
@@ -63,7 +60,6 @@ def getSubObjSource(property, graph):
         uriProperty = "#".join(list) + "#"
 
     print(uriProperty)
-
     req=None
     if(uriProperty=="http://data.doremus.org/ontology#"):
         req = """
@@ -110,12 +106,10 @@ def getSubObjSource(property, graph):
                 ?resource dcterms:%s ?object.
             }
         """
-
     req = req % namespace
     results = graph.query(req)
+    return results
 
-    for result in results:
-        print(result)
 def comparaisonRessources (propertiesList):
     valuesCompare =[]
     for prop in propertiesList:
@@ -123,7 +117,7 @@ def comparaisonRessources (propertiesList):
         listCible = getSubObjSource(prop,grapheCible)
         for ressourceS,valueS in listSource :
             for item in listCible:
-                valuesCompare.append(valueS,item[1])
+                valuesCompare.append((valueS,item[1]))
     return valuesCompare
 
 
