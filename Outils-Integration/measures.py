@@ -9,7 +9,8 @@ class Measures :
     def __init__(self,seuil):
         self.seuil=seuil
 
-    def qGrams(self,str1,str2,n):
+    def qGrams(self,str1,str2):
+        n=3
         str1NGram=list(nltk.ngrams(str1.lower(),n))
         str2NGram=list(nltk.ngrams(str2.lower(),n))
         compteur=0
@@ -29,7 +30,8 @@ class Measures :
         else :
             return 0.0
 
-    def jaccard(self,expr1,expr2,n):
+    def jaccard(self,expr1,expr2):
+        n=3
         expr1=expr1.lower()
         expr2=expr2.lower()
         ngrams1=set(nltk.ngrams(expr1,n))

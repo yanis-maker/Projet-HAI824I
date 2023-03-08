@@ -2,6 +2,7 @@ import rdflib as rdf
 from rdflib import Namespace, URIRef
 import SPARQLWrapper
 from SPARQLWrapper import SPARQLWrapper, JSON
+from measures import Measures
 
 grapheSource = rdf.Graph()
 grapheSource.parse("source.ttl", format="turtle")
@@ -110,15 +111,44 @@ def getSubObjSource(property, graph):
     results = graph.query(req)
     return results
 
-def comparaisonRessources (propertiesList):
+def comparaisonRessources (propertiesList,measureMethodChoosed,seuilChoosed):
+    m=Measures(seuilChoosed)
     valuesCompare =[]
+    dictRessourceMeasure=dict()
     for prop in propertiesList:
         listSource = getSubObjSource(prop,grapheSource)
         listCible = getSubObjSource(prop,grapheCible)
         for ressourceS,valueS in listSource :
-            for item in listCible:
-                valuesCompare.append((valueS,item[1]))
-    return valuesCompare
+            for ressourceC,valueC in listCible:
+                valuesCompare.append((ressourceS,valueS,ressourceC,valueC,0))
+    identiqueValue=[]
+    for item in valuesCompare:
+        #TO DO transformer les values en string 
+        strS=""
+        strC="" 
+        measureValue=m.measureMethod(strS,strC)
+        if measureValue>= seuilChoosed :
+            item[4]=measureValue
+            listRessources=[item[0],item[2]]
+            if listRessources in dictRessourceMeasure :
+                value=dictRessourceMeasure[listRessources]
+                dictRessourceMeasure[listRessources][0]=value[0]+measureValue
+                dictRessourceMeasure[listRessources][1]=value[1]+1 
+            else : 
+                dictRessourceMeasure[listRessources]=((measureValue,1))
+        else :
+            valuesCompare.remove(item)
+    
+    for key in dictRessourceMeasure:
+        dictRessourceMeasure[key][0]/=dictRessourceMeasure[key][1]
+        
+    return dictRessourceMeasure
+        
+
+            
+
+
+ 
 
 
 getSubObjSource("http://erlangen-crm.org/current/P102_has_title",grapheSource)
