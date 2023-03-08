@@ -35,7 +35,6 @@ def parseCible():
 def getAllProperty():
     propertySource = parseSource()
     propertyCible = parseCible()
-
     commonProprety = propertySource
     for ps in propertySource:
         for pc in propertyCible:
@@ -49,11 +48,9 @@ def getAllProperty():
 
 
 def getSubObjSource(property, graph):
-
     namespace=None
     uriProperty=None
     list=[]
-
     if(property.find("#")==-1):
         list=property.split("/")
         namespace=list[len(list)-1]
@@ -114,12 +111,21 @@ def getSubObjSource(property, graph):
             }
         """
 
-
-
     req = req % namespace
     results = graph.query(req)
 
     for result in results:
         print(result)
+def comparaisonRessources (propertiesList):
+    valuesCompare =[]
+    for prop in propertiesList:
+        listSource = getSubObjSource(prop,grapheSource)
+        listCible = getSubObjSource(prop,grapheCible)
+        for ressourceS,valueS in listSource :
+            for item in listCible:
+                valuesCompare.append(valueS,item[1])
+    return valuesCompare
+
 
 getSubObjSource("http://erlangen-crm.org/current/P102_has_title",grapheSource)
+
