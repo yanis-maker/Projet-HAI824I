@@ -44,9 +44,6 @@ def getAllProperty():
             if ps != pc and pc not in commonProprety:
                 commonProprety.append(pc)
 
-    for x in commonProprety:
-        print(x)
-
     return commonProprety
 
 
@@ -115,56 +112,55 @@ def getSubObjSource(property, graph):
     results = graph.query(req)
     return results
 
-
-def comparaisonRessources(propertiesList,seuilChoosed):
+def comparaisonRessources(propertiesList,seuilChoosed,measuresList):
     m=Measures(seuilChoosed)
     valuesCompare = []
     dictRessourceMeasure = dict()
+    identiqueValue = []
+    strS = None
+    strC = None
+    measureValue = 0
+    listMeasuresValues=[]
+    for measure in measuresList:
+        listMeasuresValues.append((measure,0))
 
     for prop in propertiesList:
         listSource = getSubObjSource(prop, grapheSource)
         listCible = getSubObjSource(prop, grapheCible)
         for ressourceS, valueS in listSource:
             for ressourceC, valueC in listCible:
-                valuesCompare.append((ressourceS, valueS, ressourceC, valueC, 0))
-    for v in listSource:
-        print(v)
-    identiqueValue = []
-    strS = None
-    strC = None
-    measureValue = 0
+                valuesCompare.append((ressourceS, valueS, ressourceC, valueC, listMeasuresValues))
     for item in valuesCompare:
-        if isinstance(item[1], rdflib.term.Literal) and isinstance(item[3], rdflib.term.Literal):
-            strS = str(item[1])
-            strC = str(item[3])
-            measureValue = m.measureMethod(strS, strC)
-
+        ''' 
         if isinstance(item[1], rdflib.term.URIRef) and isinstance(item[3], rdflib.term.URIRef):
             measureValue = compareURI(item[1], item[3])
 
         if isinstance(item[1], rdflib.term.BNode) and isinstance(item[3], rdflib.term.BNode):
             measureValue = compareBNode(item[1], item[3])
-
-        if measureValue >= seuilChoosed:
-            item[4] = measureValue
-            listRessources = [item[0], item[2]]
-            if listRessources in dictRessourceMeasure:
-                value = dictRessourceMeasure[listRessources]
-                dictRessourceMeasure[listRessources][0] = value[0] + measureValue
-                dictRessourceMeasure[listRessources][1] = value[1] + 1
-            else:
-                dictRessourceMeasure[listRessources] = ((measureValue, 1))
-        else:
-            valuesCompare.remove(item)
+        '''
+        if isinstance(item[1], rdflib.term.Literal) and isinstance(item[3], rdflib.term.Literal):
+            strS = str(item[1])
+            strC = str(item[3])
+            listMeasComparable=item[4]
+            for meas,v in listMeasComparable:
+                measureValue=m.meas(strS,strC)
+                if measureValue >= seuilChoosed:
+                    listRessources = ((item[0], item[2]))
+                    if listRessources in dictRessourceMeasure:
+                        for list in dictRessourceMeasure[listRessources] :
+                            if list[0]==meas :
+                                list[1]+=measureValue
+                                list[2]+=1
+                    else:
+                        dictRessourceMeasure[listRessources] = ((meas, measureValue,1))
+                else:
+                    valuesCompare.remove(item)
 
     for key in dictRessourceMeasure:
-        dictRessourceMeasure[key][0] /= dictRessourceMeasure[key][1]
+        for list in dictRessourceMeasure[key]:
+            list[1]/=list[2]
 
     return dictRessourceMeasure
-
-
-comparaisonRessources(["http://erlangen-crm.org/current/P9_consists_of"])
-
 
 def compareURI(value1, value2, seuilChoosed):
     str1 = str(value1)
@@ -172,16 +168,8 @@ def compareURI(value1, value2, seuilChoosed):
     q = prepareQuery(
         "SELECT ?property ?value WHERE {?subject ?property ?value .}",
     )
-
     result1 = grapheSource.query(q, initBindings={'subject': value1})
     result2 = grapheCible.query(q, initBindings={'subject' : value2})
-
-    for row in result1:
-        print(row)
-
-    print("=====================================================================")
-    for row in result2:
-        print(row)
 
     return 0
 
@@ -189,10 +177,10 @@ def compareURI(value1, value2, seuilChoosed):
 # compareURI(URIRef("http://data.doremus.org/expression/51cbf519-6243-303f-91f6-f70fe55a92d8"),
 #                   URIRef("http://data.doremus.org/expression/c5548a52-1da2-348d-9eb0-311293232d05"))
 
-def compareBNode(value1, value2):
+def compareBNode(value1, value2, seuil):
     result1 = []
     result2 = []
-
+    m=Measures(seuil)
     for s, p, o in grapheSource:
         if isinstance(s, rdflib.term.BNode):
             result1.append(list[p, o])
@@ -200,14 +188,6 @@ def compareBNode(value1, value2):
     for s, p, o in grapheCible:
         if isinstance(s, rdflib.term.BNode) and s == value1:
             result2.append(list[p, o])
-
-    for row in result1:
-        print(row)
-
-    print("=====================================================================")
-    for row in result2:
-        print(row)
-
     cpt = 0
     total = 0
     for p1, v1 in result1:
@@ -223,3 +203,7 @@ def compareBNode(value1, value2):
 
 # compareBNode(rdflib.term.BNode("n516b68b3b31b44c887c4e546191b53ebb3"),
 #              rdflib.term.BNode("n8bb2785687b644cf8527fad82d3be197b9"))
+
+'''
+        
+'''

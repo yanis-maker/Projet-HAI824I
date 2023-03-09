@@ -114,16 +114,14 @@ class Measures :
             sim += max_sim
         sim /= len(words1)
         return sim
-
-
 m= Measures(3)
 
-print(m.jaccard("amadus mozart","a.mozart",3))
-print(m.jaro_similarity("amadus mozart","a.mozart"))
+print(m.jaccard("amadus mozart","a.mozart"))
+print(m.jaro("amadus mozart","a.mozart"))
 print(m.jaroWinkler("amadus mozart","a.mozart"))
 print(m.monge_elkan("amadus mozart","a.mozart",jaro_winkler_similarity))
 print(m.levenshtein("amadus mozart","a.mozart"))
-print(m.qGrams("amadus mozart","a.mozart",3))
+print(m.qGrams("amadus mozart","a.mozart"))
 
 
 
