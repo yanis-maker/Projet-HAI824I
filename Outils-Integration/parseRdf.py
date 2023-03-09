@@ -141,9 +141,9 @@ def comparaisonRessources(propertiesList,seuilChoosed):
             strC=str(item[3])
             measureValue = m.measureMethod(strS, strC)
         if isinstance(item[1], rdflib.term.URIRef) and isinstance(item[3], rdflib.term.URIRef):
-            measureValue =
+            measureValue=compareURI(item[1], item[3])
         if isinstance(item[1], rdflib.term.BNode) and isinstance(item[3], rdflib.term.BNode):
-            measureValue=compareBNode(item[3],item[1])
+            measureValue=compareBNode(item[1],item[3])
         if measureValue>= seuilChoosed :
             item[4]=measureValue
             listRessources=[item[0],item[2]]
@@ -165,7 +165,7 @@ def comparaisonRessources(propertiesList,seuilChoosed):
 comparaisonRessources(["http://erlangen-crm.org/current/P9_consists_of"])
 
 
-def compareURI(value1, value2):
+def compareURI(value1, value2,seuilChoosed):
     str1 = str(value1)
     str2 = str(value2)
     q = prepareQuery(
@@ -182,12 +182,12 @@ def compareURI(value1, value2):
     for row in result2:
         print(row)
 
-
+    return 0
 
 # compareURI(URIRef("http://data.doremus.org/expression/51cbf519-6243-303f-91f6-f70fe55a92d8"),
 #                  URIRef("http://data.doremus.org/expression/c5548a52-1da2-348d-9eb0-311293232d05"))
 
-def compareBNode(value1,value2,seuilChoosed):
+def compareBNode(value1,value2):
     q = prepareQuery(
         "SELECT ?property ?value WHERE {_:blanknode ?property ?value .}",
     )
@@ -211,8 +211,7 @@ def compareBNode(value1,value2,seuilChoosed):
                     total+=compareURI(v1,v2)
                 else:
                     mesureValue=m.measureMethod(v1,v2)
-                    if(mesureValue >= seuilChoosed):
-                        total+=mesureValue
+                    total+=mesureValue
     return total/cpt
 
 
