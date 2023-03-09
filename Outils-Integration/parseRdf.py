@@ -205,11 +205,11 @@ def compareBNode(value1,value2,seuilChoosed):
     total=0
     for p1,v1 in result1:
         for p2,v2 in result2:
-            if(isinstance(v1,URIRef)):
-                total+=compareURI(v1,v2)
-            else:
-                if(p1==p2):
-                    cpt+=1
+            if (p1 == p2):
+                cpt += 1
+                if isinstance(v1, URIRef) and isinstance((v2, URIRef)):
+                    total+=compareURI(v1,v2)
+                else:
                     mesureValue=m.measureMethod(v1,v2)
                     if(mesureValue >= seuilChoosed):
                         total+=mesureValue
