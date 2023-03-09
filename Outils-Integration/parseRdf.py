@@ -1,8 +1,14 @@
 import rdflib as rdf
+import rdflib.term
 from rdflib import Namespace, URIRef
 import SPARQLWrapper
 from SPARQLWrapper import SPARQLWrapper, JSON
+
 from measures import Measures
+
+#from measures import Measures
+
+#from measures import Measures
 
 grapheSource = rdf.Graph()
 grapheSource.parse("source.ttl", format="turtle")
@@ -11,8 +17,6 @@ grapheCible = rdf.Graph()
 grapheCible.parse("cible.ttl", format="turtle")
 
 def parseSource():
-
-
     propertySource = []
     for s, p, o in grapheSource:
         namespace = grapheSource.namespace_manager.normalizeUri(p)
@@ -60,7 +64,6 @@ def getSubObjSource(property, graph):
         list.remove(namespace)
         uriProperty = "#".join(list) + "#"
 
-    print(uriProperty)
     req=None
     if(uriProperty=="http://data.doremus.org/ontology#"):
         req = """
@@ -111,10 +114,11 @@ def getSubObjSource(property, graph):
     results = graph.query(req)
     return results
 
-def comparaisonRessources (propertiesList,measureMethodChoosed,seuilChoosed):
+def comparaisonRessources (propertiesList,seuilChoosed):
     m=Measures(seuilChoosed)
     valuesCompare =[]
     dictRessourceMeasure=dict()
+
     for prop in propertiesList:
         listSource = getSubObjSource(prop,grapheSource)
         listCible = getSubObjSource(prop,grapheCible)
@@ -123,9 +127,8 @@ def comparaisonRessources (propertiesList,measureMethodChoosed,seuilChoosed):
                 valuesCompare.append((ressourceS,valueS,ressourceC,valueC,0))
     identiqueValue=[]
     for item in valuesCompare:
-        #TO DO transformer les values en string 
-        strS=""
-        strC="" 
+        strS=convertObjtoStr(item[1])
+        strC=convertObjtoStr(item[3])
         measureValue=m.measureMethod(strS,strC)
         if measureValue>= seuilChoosed :
             item[4]=measureValue
@@ -133,17 +136,24 @@ def comparaisonRessources (propertiesList,measureMethodChoosed,seuilChoosed):
             if listRessources in dictRessourceMeasure :
                 value=dictRessourceMeasure[listRessources]
                 dictRessourceMeasure[listRessources][0]=value[0]+measureValue
-                dictRessourceMeasure[listRessources][1]=value[1]+1 
-            else : 
+                dictRessourceMeasure[listRessources][1]=value[1]+1
+            else :
                 dictRessourceMeasure[listRessources]=((measureValue,1))
         else :
             valuesCompare.remove(item)
-    
+
     for key in dictRessourceMeasure:
         dictRessourceMeasure[key][0]/=dictRessourceMeasure[key][1]
-        
+
     return dictRessourceMeasure
-        
+
+def convertObjtoStr(value):
+    if(isinstance(value,rdflib.term.Literal)):
+        return str(value)
+
+comparaisonRessources(["http://erlangen-crm.org/current/P3_has_note"])
+
+
 
             
 
