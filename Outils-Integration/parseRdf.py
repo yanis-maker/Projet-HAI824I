@@ -4,10 +4,7 @@ from rdflib import Namespace, URIRef
 import SPARQLWrapper
 from SPARQLWrapper import SPARQLWrapper, JSON
 from rdflib.plugins.sparql import prepareQuery
-
-#from measures import m
-
-# from measures import Measures
+from measures import Measures
 
 
 grapheSource = rdf.Graph()
@@ -119,8 +116,8 @@ def getSubObjSource(property, graph):
     return results
 
 
-def comparaisonRessources(propertiesList):
-    # m=Measures(seuilChoosed)
+def comparaisonRessources(propertiesList,seuilChoosed):
+    m=Measures(seuilChoosed)
     valuesCompare = []
     dictRessourceMeasure = dict()
 
