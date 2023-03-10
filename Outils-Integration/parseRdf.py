@@ -7,13 +7,11 @@ from rdflib.plugins.sparql import prepareQuery
 from measures import Measures
 
 
+
 grapheSource = rdf.Graph()
 grapheSource.parse("source.ttl", format="turtle")
-
 grapheCible = rdf.Graph()
 grapheCible.parse("cible.ttl", format="turtle")
-
-
 def parseSource():
     propertySource = []
     for s, p, o in grapheSource:
@@ -22,8 +20,6 @@ def parseSource():
             propertySource.append(namespace)
 
     return propertySource
-
-
 def parseCible():
     propertyCible = []
 
@@ -33,8 +29,6 @@ def parseCible():
             propertyCible.append(namespace)
 
     return propertyCible
-
-
 def getAllProperty():
     propertySource = parseSource()
     propertyCible = parseCible()
@@ -45,8 +39,6 @@ def getAllProperty():
                 commonProprety.append(pc)
 
     return commonProprety
-
-
 def getSubObjSource(property, graph):
     namespace = None
     uriProperty = None
@@ -212,4 +204,15 @@ dictionnaire={
 openResultFile(dictionnaire)
 # compareBNode(rdflib.term.BNode("n516b68b3b31b44c887c4e546191b53ebb3"),
 #              rdflib.term.BNode("n8bb2785687b644cf8527fad82d3be197b9"))
+
+def calculPrecisionRappel(resultFile,refFile ):
+    true_positives = 0
+    false_positives = 0
+    false_negatives = 0
+    #TODO comparer les deux fichiers en terme des ressources et calcul des 3 variables déclarées ci-dessus
+    #PAS ENCORE FINI
+    precision = true_positives / (true_positives + false_positives)
+    recall = true_positives / (true_positives + false_negatives)
+
+    return [precision, recall]
 
