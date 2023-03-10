@@ -3,37 +3,50 @@ import tkinter as tk
 from tkinter import filedialog
 
 import command
+import bridge
+
+pont = bridge.Bridge()
+
 
 def validerSource():
   filepath = filedialog.askopenfilename(title="Ouvrir un fichier source")
   sourceEntree.delete(0, tk.END)
   sourceEntree.insert(0, filepath)
+  pont.setFichierSource(filepath)
 
 
 def validerCible():
   filepath = filedialog.askopenfilename(title="Ouvrir un fichier cible")
   cibleEntree.delete(0, tk.END)
   cibleEntree.insert(0, filepath)
+  pont.setFichierCible(filepath)
 
 
 def validerAlign():
   filepath = filedialog.askopenfilename(title="Ouvrir un fichier d'alignement")
   cibleEntree.delete(0, tk.END)
   cibleEntree.insert(0, filepath)
+  pont.setFichierAlign(filepath)
 
 
 def validerSeuil():
   valeurSeuil = seuilEntree.get()
-  print(valeurSeuil)
+  pont.setSeuil(valeurSeuil)
+
+
+def on_checked(checkbox_var, checkbox_text):
+    if checkbox_var.get():
+        pont.addListSimilarity(checkbox_text)
+
 
 root = tk.Tk()
 root.title("Outil intégration de données")
 
-canvas=tk.Canvas(root,height=500,width=500,bg="#263D42")
+canvas = tk.Canvas(root, height=500, width=500, bg="#263D42")
 canvas.pack()
 
 # Fichier source
-labelSource = tk.Label(canvas, text="Fichier source :", bg="white")
+labelSource = tk.Label(canvas, text="Fichier source :", bg="#263D42", fg="#FFFF00")
 canvas.create_window(60, 20, window=labelSource)
 sourceEntree = tk.Entry(canvas, bg="white", width=50)
 canvas.create_window(260, 20, window=sourceEntree)
@@ -45,7 +58,7 @@ sourceValider = tk.Button(canvas,
 canvas.create_window(450, 20, window=sourceValider)
 
 # Fichier cible
-labelCible = tk.Label(canvas, text="Fichier cible :", bg="white")
+labelCible = tk.Label(canvas, text="Fichier cible :", bg="#263D42", fg="#FFFF00")
 canvas.create_window(60, 50, window=labelCible)
 cibleEntree = tk.Entry(canvas, bg="white", width=50)
 canvas.create_window(260, 50, window=cibleEntree)
@@ -57,7 +70,7 @@ cibleValider = tk.Button(canvas,
 canvas.create_window(450, 50, window=cibleValider)
 
 # Alignement
-labelAlign = tk.Label(canvas, text="Fichier cible :", bg="white")
+labelAlign = tk.Label(canvas, text="Fichier cible :", bg="#263D42", fg="#FFFF00")
 canvas.create_window(60, 80, window=labelAlign)
 alignEntree = tk.Entry(canvas, bg="white", width=50)
 canvas.create_window(260, 80, window=alignEntree)
@@ -69,7 +82,7 @@ alignValider = tk.Button(canvas,
 canvas.create_window(450, 80, window=alignValider)
 
 # Seuil
-labelSeuil = tk.Label(canvas, text="Seuil :", bg="white")
+labelSeuil = tk.Label(canvas, text="Seuil :", bg="#263D42", fg="#FFFF00")
 canvas.create_window(70, 300, window=labelSeuil)
 seuilEntree = tk.Entry(canvas, bg="white", width=7)
 canvas.create_window(120, 300, window=seuilEntree)
@@ -80,21 +93,72 @@ seuilValider = tk.Button(canvas,
                          command=validerSeuil)
 canvas.create_window(170, 300, window=seuilValider)
 
+propretyButton = tk.Button(canvas,
+                           text="Choix des propriétés",
+                           bg="white",
+                           command=command.propApp)
+canvas.create_window(120, 200, window=propretyButton)
 
+#mesuresButton = tk.Button(canvas, text="Choix des mesures", bg="white")
+#canvas.create_window(350, 200, window=mesuresButton)
 
+varIdentity = tk.BooleanVar()
+varQgrams = tk.BooleanVar()
+varJaccard = tk.BooleanVar()
+varJaro = tk.BooleanVar()
+varJaroWinkler = tk.BooleanVar()
+varLevenshtein = tk.BooleanVar()
+varMongeElkan = tk.BooleanVar()
 
+# A faire dans une boucle car plus propre si le temps
+checkIdentity = tk.Checkbutton(canvas, text="Identity",
+                               variable=varIdentity,
+                               bg="#263D42", fg="#FFFF00",
+                               command=lambda: on_checked(varIdentity, "Identity"))
+canvas.create_window(350, 200, window=checkIdentity)
 
-propretyButton=tk.Button(canvas, text="Choix des propriétés", bg="white", command=command.propApp)
-canvas.create_window(120,200,window=propretyButton)
+checkQgrams = tk.Checkbutton(canvas, text="Qgrams",
+                             variable=varQgrams,
+                             bg="#263D42", fg="#FFFF00",
+                             command=lambda: on_checked(varQgrams, "Qgrams"))
+canvas.create_window(350, 220, window=checkQgrams)
 
-mesuresButton=tk.Button(canvas,text="Choix des mesures",bg="white")
-canvas.create_window(350,200,window=mesuresButton)
+checkJaccard = tk.Checkbutton(canvas, text="Jaccard",
+                              variable=varJaccard,
+                              bg="#263D42", fg="#FFFF00",
+                              command=lambda: on_checked(varJaccard, "Jaccard"))
+canvas.create_window(350, 240, window=checkJaccard)
 
-confirmButton=tk.Button(root,text="Confirmer")
+checkJaro = tk.Checkbutton(canvas, text="Jaro",
+                           variable=varJaro,
+                           bg="#263D42", fg="#FFFF00",
+                           command=lambda: on_checked(varJaro, "Jaro"))
+canvas.create_window(350, 260, window=checkJaro)
+
+checkJaroWinkler = tk.Checkbutton(canvas,
+                                  text="JaroWinkler",
+                                  bg="#263D42", fg="#FFFF00",
+                                  variable=varJaroWinkler,
+                                  command=lambda: on_checked(varJaroWinkler, "JaroWinkler"))
+canvas.create_window(350, 280, window=checkJaroWinkler)
+
+checkLevenshtein = tk.Checkbutton(canvas,
+                                  text="Levenshtein",
+                                  variable=varLevenshtein,
+                                  bg="#263D42", fg="#FFFF00",
+                                  command=lambda: on_checked(varLevenshtein, "Levenshtein"))
+canvas.create_window(350, 300, window=checkLevenshtein)
+
+checkMongeElkan = tk.Checkbutton(canvas,
+                                 text="Monge-Elkan",
+                                 variable=varMongeElkan,
+                                 bg="#263D42", fg="#FFFF00",
+                                 command=lambda: on_checked(varMongeElkan, "Monge-Elkan"))
+canvas.create_window(350, 320, window=checkMongeElkan)
+
+confirmButton = tk.Button(root, text="Confirmer")
 confirmButton.pack()
 
 root.mainloop()
-
-
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
