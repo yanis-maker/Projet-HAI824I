@@ -1,6 +1,6 @@
 import nltk
 from nltk.metrics.distance import jaro_winkler_similarity
-from py_stringmatching import Jaccard
+#from py_stringmatching import Jaccard
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 from scipy.spatial.distance import hamming
@@ -30,14 +30,14 @@ class Measures :
         else :
             return 0.0
 
-    def jaccard(self,expr1,expr2):
-        n=3
-        expr1=expr1.lower()
-        expr2=expr2.lower()
-        ngrams1=set(nltk.ngrams(expr1,n))
-        ngrams2=set(nltk.ngrams(expr2,n))
-        extJaccard=Jaccard()
-        return extJaccard.get_sim_score(ngrams1,ngrams2)
+    # def jaccard(self,expr1,expr2):
+    #     n=3
+    #     expr1=expr1.lower()
+    #     expr2=expr2.lower()
+    #     ngrams1=set(nltk.ngrams(expr1,n))
+    #     ngrams2=set(nltk.ngrams(expr2,n))
+    #     extJaccard=Jaccard()
+    #     return extJaccard.get_sim_score(ngrams1,ngrams2)
 
     def jaro(self,str1, str2):
         len_str1 = len(str1)
@@ -116,7 +116,7 @@ class Measures :
         return sim
 m= Measures(3)
 
-print(m.jaccard("amadus mozart","a.mozart"))
+#print(m.jaccard("amadus mozart","a.mozart"))
 print(m.jaro("amadus mozart","a.mozart"))
 print(m.jaroWinkler("amadus mozart","a.mozart"))
 print(m.monge_elkan("amadus mozart","a.mozart",jaro_winkler_similarity))
