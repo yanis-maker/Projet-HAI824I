@@ -10,6 +10,7 @@ grapheSource = rdf.Graph()
 grapheSource.parse("source.ttl", format="turtle")
 grapheCible = rdf.Graph()
 grapheCible.parse("cible.ttl", format="turtle")
+m = Measures(3)
 
 
 def parseSource():
@@ -130,31 +131,38 @@ def comparaisonRessources(propertiesList, seuilChoosed, measuresList):
             for ressourceC, valueC in listCible:
                 valuesCompare.append((ressourceS, valueS, ressourceC, valueC, prop, listMeasuresValues))
     print(valuesCompare[2][2])
+
+    for item in valuesCompare:
+        property = item[4]
+        resS = item[0]
+        valueS = item[1]
+        resC = item[2]
+        valueC = item[3]
+        if str(property) == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" and str(valueS) != str(valueC):
+            valuesCompare.remove(item)
+            for itemDelete in valuesCompare:
+                if itemDelete[0] == resS and itemDelete[2] == resC:
+                    valuesCompare.remove(itemDelete)
+
     for item in valuesCompare:
         listMeasComparable = item[5]
-        for meas, v in listMeasComparable:
-            if isinstance(item[1], rdflib.term.Literal) and isinstance(item[3], rdflib.term.Literal):
-                measureValue = compareLiteral(item[1], item[3], meas)
-            if isinstance(item[1], rdflib.term.URIRef) and isinstance(item[3], rdflib.term.URIRef):
-                measureValue = compareURI(item[1], item[3], meas)
-            if isinstance(item[1], rdflib.term.BNode) and isinstance(item[3], rdflib.term.BNode):
-                measureValue = compareBNode(item[1], item[3],item[4],meas)
-
-            if measureValue >= seuilChoosed:
-                listRessources = ((item[0], item[2]))
-                if listRessources in dictRessourceMeasure:
-                    for list in dictRessourceMeasure[listRessources]:
-                        if list[0] == meas:
-                            list[1] += measureValue
-                            list[2] += 1
-                else:
-                    dictRessourceMeasure[listRessources] = ((meas, measureValue, 1))
-            else:
-                valuesCompare.remove(item)
+        if str(item[4]) == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" and str(item[1]) == str(item[3]):
+            for meas, v in listMeasComparable:
+                if isinstance(item[1], rdflib.term.Literal) and isinstance(item[3], rdflib.term.Literal):
+                    measureValue = compareLiteral(item[1], item[3], meas)
+                    listRessources = (item[0], item[2])
+                    if listRessources in dictRessourceMeasure:
+                        for list in dictRessourceMeasure[listRessources]:
+                            if list[0] == meas:
+                                list[1] += measureValue
+                                list[2] += 1
+                    else:
+                        dictRessourceMeasure[listRessources] = (meas, measureValue, 1)
 
     for key in dictRessourceMeasure:
         for list in dictRessourceMeasure[key]:
             list[1] /= list[2]
+
 
     return dictRessourceMeasure
 
@@ -169,31 +177,33 @@ def compareURI(value1, value2, measure):
     )
     result1 = grapheSource.query(q, initBindings={'subject': value1})
     result2 = grapheCible.query(q, initBindings={'subject': value2})
+    for r in result1:
+        print(r)
+    print("========================")
+    for r1 in result2 :
+        print(r1)
 
-    cpt = 1
+    cpt = 0
     total = 0
     for p1, v1 in result1:
         for p2, v2 in result2:
             if str(p1) == str(p2):
-                if str(p1) == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type":
-                    if (str(v1) == str(v2)):
-                        total += 1
-                else:
-                    if (isinstance(v1, Literal)):
-                        cpt += 1
-                        total += compareLiteral(v1, v2, measure)
-                    if (isinstance(v1, URIRef)):
-                        cpt += 1
-                        total += compareURI(v1, v2, measure)
-                    if (isinstance(v1, BNode)):
-                        total += compareBNode(v1, v2, p1, measure)
+                print("trouve")
+                cpt += 1
+                # if str(p1) == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type":
+                #     if str(v1) == str(v2):
+                #         total += 1
+               # else:
+                if isinstance(v1, Literal):
+                    total += compareLiteral(v1, v2, measure)
+                if isinstance(v1, URIRef):
+                    total += compareURI(v1, v2, measure)
+                if isinstance(v1, BNode):
+                    total += compareBNode(v1, v2, p1, measure)
     return total / cpt
 
-    return 0
-
-
 # compareURI(URIRef("http://data.doremus.org/expression/51cbf519-6243-303f-91f6-f70fe55a92d8"),
-#            URIRef("http://data.doremus.org/expression/c5548a52-1da2-348d-9eb0-311293232d05"))
+#            URIRef("http://data.doremus.org/expression/c5548a52-1da2-348d-9eb0-311293232d05"), m.levenshtein)
 
 
 def compareBNode(res1, res2, prop, measure):
