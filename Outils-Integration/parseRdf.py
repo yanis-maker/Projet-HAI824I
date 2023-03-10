@@ -211,6 +211,13 @@ def calculPrecisionRappel(resultFile, refFile):
     false_positives = 0
     false_negatives = 0
     # TODO comparer les deux fichiers en terme des ressources et calcul des 3 variables déclarées ci-dessus
+    fileRef = open('reference_file.ttl', 'r')
+    fileResult = open('resultat.ttl', 'r')
+    lignesRef = fileRef.readlines()
+    lignesRes = fileResult.readlines()
+    for ligneRef in lignesRef:
+        for lignesRes in lignesRes:
+            print("" + lignesRes + "\n")
     # PAS ENCORE FINI
     precision = true_positives / (true_positives + false_positives)
     recall = true_positives / (true_positives + false_negatives)
