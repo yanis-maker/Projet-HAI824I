@@ -1,9 +1,12 @@
 import rdflib
 import tkinter as tk
 from tkinter import filedialog
+from tkinter.ttk import *
+import tkinter.ttk as ttk
 
 import command
 import bridge
+import parseRDF
 
 pont = bridge.Bridge()
 
@@ -93,11 +96,20 @@ seuilValider = tk.Button(canvas,
                          command=validerSeuil)
 canvas.create_window(170, 300, window=seuilValider)
 
-propretyButton = tk.Button(canvas,
-                           text="Choix des propriétés",
-                           bg="white",
-                           command=command.propApp)
-canvas.create_window(120, 200, window=propretyButton)
+#propretyButton = tk.Button(canvas,
+#                           text="Choix des propriétés",
+#                           bg="white",
+#                           command=command.propApp)
+#canvas.create_window(120, 200, window=propretyButton)
+
+# Création du texte "choix des propriétés"
+label_properties = tk.Label(root, text="Choix des propriétés :", bg="#263D42", fg="#FFFF00")
+canvas.create_window(120, 200,window=label_properties)
+#label_properties.pack()
+
+# Création de la liste déroulante contenant les propriétés communes
+listbox_properties = combo = ttk.Combobox(root, values=parseRDF.getAllProperty())
+canvas.create_window(120, 220,window=listbox_properties)
 
 #mesuresButton = tk.Button(canvas, text="Choix des mesures", bg="white")
 #canvas.create_window(350, 200, window=mesuresButton)
