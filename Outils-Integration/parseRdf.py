@@ -74,13 +74,10 @@ def getSubObjSource(property, graph):
     elif (uriProperty == "http://erlangen-crm.org/current/"):
         req = """
             PREFIX ecrm: <http://erlangen-crm.org/current/>
-            PREFIX efrbroo: <http://erlangen-crm.org/efrbroo/>
-            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     
             SELECT ?resource ?object
             WHERE{
                 ?resource ecrm:%s ?object.
-                ?resource rdf:type efrbroo:F22_Self-Contained_Expression
             }
         """
     elif (uriProperty == "http://www.w3.org/2001/XMLSchema#"):
@@ -167,11 +164,10 @@ def comparaisonRessources(propertiesList, seuilChoosed, measuresList):
                     dictRessourceMeasure[listRessources] = [meas, measureValue, 1]
 
 
-    for key in dictRessourceMeasure:
-        for list in dictRessourceMeasure[key]:
+    for key, list in dictRessourceMeasure.items():
             list[1] /= list[2]
-            if list[1] < seuilChoosed:
-                del dictRessourceMeasure[key]
+            # if list[1] < seuilChoosed:
+            #     del dictRessourceMeasure[key]
 
     return dictRessourceMeasure
 
