@@ -74,10 +74,13 @@ def getSubObjSource(property, graph):
     elif (uriProperty == "http://erlangen-crm.org/current/"):
         req = """
             PREFIX ecrm: <http://erlangen-crm.org/current/>
+            PREFIX efrbroo: <http://erlangen-crm.org/efrbroo/>
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     
             SELECT ?resource ?object
             WHERE{
                 ?resource ecrm:%s ?object.
+                ?resource rdf:type efrbroo:F22_Self-Contained_Expression
             }
         """
     elif (uriProperty == "http://www.w3.org/2001/XMLSchema#"):
@@ -129,8 +132,10 @@ def comparaisonRessources(propertiesList, seuilChoosed, measuresList):
         listCible = getSubObjSource(prop, grapheCible)
         for ressourceS, valueS in listSource:
             for ressourceC, valueC in listCible:
-                valuesCompare.append((ressourceS, valueS, ressourceC, valueC, prop, listMeasuresValues))
-    print(valuesCompare[2][2])
+                if not isinstance(ressourceC,BNode) and not isinstance(ressourceS,BNode) and isinstance(valueC, rdflib.term.Literal) and isinstance(valueS, rdflib.term.Literal):
+                    print(prop)
+                    valuesCompare.append((ressourceS, valueS, ressourceC, valueC, prop, listMeasuresValues))
+
 
     for item in valuesCompare:
         property = item[4]
@@ -146,25 +151,35 @@ def comparaisonRessources(propertiesList, seuilChoosed, measuresList):
 
     for item in valuesCompare:
         listMeasComparable = item[5]
-        if str(item[4]) == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" and str(item[1]) == str(item[3]):
-            for meas, v in listMeasComparable:
-                if isinstance(item[1], rdflib.term.Literal) and isinstance(item[3], rdflib.term.Literal):
-                    measureValue = compareLiteral(item[1], item[3], meas)
-                    listRessources = (item[0], item[2])
-                    if listRessources in dictRessourceMeasure:
-                        for list in dictRessourceMeasure[listRessources]:
+            #print("Ca rentre")
+        for meas, v in listMeasComparable:
+            print(meas.__name__)
+            if isinstance(item[1], rdflib.term.Literal) and isinstance(item[3], rdflib.term.Literal):
+                measureValue = compareLiteral(item[1], item[3], meas)
+                listRessources = (item[0], item[2])
+                if listRessources in dictRessourceMeasure:
+                    for cle, list in dictRessourceMeasure.items():
+                        if cle==listRessources:
                             if list[0] == meas:
                                 list[1] += measureValue
                                 list[2] += 1
-                    else:
-                        dictRessourceMeasure[listRessources] = (meas, measureValue, 1)
+                else:
+                    dictRessourceMeasure[listRessources] = [meas, measureValue, 1]
+
 
     for key in dictRessourceMeasure:
         for list in dictRessourceMeasure[key]:
             list[1] /= list[2]
-
+            if list[1] < seuilChoosed:
+                del dictRessourceMeasure[key]
 
     return dictRessourceMeasure
+
+def compareLiteral(value1, value2, measure):
+    return measure(str(value1), str(value2))
+
+dic = comparaisonRessources(("http://erlangen-crm.org/current/P3_has_note",),
+                            0.5, (m.levenshtein,))
 
 
 def compareURI(value1, value2, measure):
@@ -180,7 +195,7 @@ def compareURI(value1, value2, measure):
     for r in result1:
         print(r)
     print("========================")
-    for r1 in result2 :
+    for r1 in result2:
         print(r1)
 
     cpt = 0
@@ -193,7 +208,7 @@ def compareURI(value1, value2, measure):
                 # if str(p1) == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type":
                 #     if str(v1) == str(v2):
                 #         total += 1
-               # else:
+                # else:
                 if isinstance(v1, Literal):
                     total += compareLiteral(v1, v2, measure)
                 if isinstance(v1, URIRef):
@@ -201,6 +216,7 @@ def compareURI(value1, value2, measure):
                 if isinstance(v1, BNode):
                     total += compareBNode(v1, v2, p1, measure)
     return total / cpt
+
 
 # compareURI(URIRef("http://data.doremus.org/expression/51cbf519-6243-303f-91f6-f70fe55a92d8"),
 #            URIRef("http://data.doremus.org/expression/c5548a52-1da2-348d-9eb0-311293232d05"), m.levenshtein)
@@ -236,9 +252,7 @@ def compareBNode(res1, res2, prop, measure):
 #              URIRef("http://erlangen-crm.org/current/P9_consists_of"))
 
 
-def compareLiteral(value1, value2, measure):
-    m = Measures(3)
-    return measure(str(value1), str(value2))
+
 
 
 def openResultFile(dicRessourceIdentique):
@@ -249,9 +263,9 @@ def openResultFile(dicRessourceIdentique):
             file.write(key[0] + "owl:sameAs" + key[1] + "\n")
 
 
-dictionnaire = {
-    ("<ressource1>", "<ressource2>"): "p", ("<ressource2>", "<ressource3>"): "p"}
-openResultFile(dictionnaire)
+openResultFile(dic)
+for d in dic:
+    print(d)
 
 
 # compareBNode(rdflib.term.BNode("n516b68b3b31b44c887c4e546191b53ebb3"),
