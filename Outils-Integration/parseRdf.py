@@ -200,10 +200,16 @@ def compareBNode(value1, value2, seuil):
                     mesureValue = m.measureMethod(v1, v2)
                     total += mesureValue
     return total / cpt
+def openResultFile(dicRessourceIdentique):
+    # Afficher les préfixes
+    with open('resultat.ttl', 'w') as file:
+        file.write("@prefix owl: < http: // www.w3.org / 2002 / 07 / owl  # >\n")
+        for key in dicRessourceIdentique:
+            file.write(key[0]+"owl:sameAs"+key[1]+"\n")
 
+dictionnaire={
+    ("<ressource1>","<ressource2>"):"p",("<ressource2>","<ressource3>"):"p"}
+openResultFile(dictionnaire)
 # compareBNode(rdflib.term.BNode("n516b68b3b31b44c887c4e546191b53ebb3"),
 #              rdflib.term.BNode("n8bb2785687b644cf8527fad82d3be197b9"))
 
-'''
-        
-'''
