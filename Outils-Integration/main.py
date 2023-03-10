@@ -6,7 +6,7 @@ import tkinter.ttk as ttk
 
 import command
 import bridge
-import parseRDF
+import parseRdf
 
 pont = bridge.Bridge()
 
@@ -108,7 +108,7 @@ canvas.create_window(120, 200,window=label_properties)
 #label_properties.pack()
 
 # Création de la liste déroulante contenant les propriétés communes
-listbox_properties = combo = ttk.Combobox(root, values=parseRDF.getAllProperty())
+listbox_properties = combo = ttk.Combobox(root, values=parseRdf.getAllProperty())
 canvas.create_window(120, 220,window=listbox_properties)
 
 #mesuresButton = tk.Button(canvas, text="Choix des mesures", bg="white")
