@@ -200,6 +200,7 @@ def calculPrecisionRappel(resultFile, refFile):
             r1 = str(r1.strip("<>"))
             r2 = str(r2.strip("<>"))
             r2 = r2[:-1]
+            #ici r2 a toujours le ">" collé a la fin faut enlever ça
             ressourcesSimRes.append((r1,r2))
 
 
