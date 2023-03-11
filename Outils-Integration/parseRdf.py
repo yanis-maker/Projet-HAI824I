@@ -5,6 +5,7 @@ import SPARQLWrapper
 from SPARQLWrapper import SPARQLWrapper, JSON
 from rdflib.plugins.sparql import prepareQuery
 from measures import Measures
+import re
 
 grapheSource = rdf.Graph()
 grapheSource.parse("source.ttl", format="turtle")
@@ -65,51 +66,69 @@ def getSubObjSource(property, graph):
     if (uriProperty == "http://data.doremus.org/ontology#"):
         req = """
             PREFIX mus: <http://data.doremus.org/ontology#>
+            PREFIX efrbroo: <http://erlangen-crm.org/efrbroo/>
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     
             SELECT ?resource ?object
             WHERE{
                 ?resource mus:%s ?object.
+                ?resource rdf:type efrbroo:F22_Self-Contained_Expression
             }
         """
     elif (uriProperty == "http://erlangen-crm.org/current/"):
         req = """
             PREFIX ecrm: <http://erlangen-crm.org/current/>
+            PREFIX efrbroo: <http://erlangen-crm.org/efrbroo/>
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     
             SELECT ?resource ?object
             WHERE{
                 ?resource ecrm:%s ?object.
+                ?resource rdf:type efrbroo:F22_Self-Contained_Expression
             }
         """
     elif (uriProperty == "http://www.w3.org/2001/XMLSchema#"):
         req = """
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            PREFIX efrbroo: <http://erlangen-crm.org/efrbroo/>
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     
             SELECT ?resource ?object
             WHERE{
                 ?resource xsd:%s ?object.
+                ?resource rdf:type efrbroo:F22_Self-Contained_Expression
             }
         """
     elif (uriProperty == "http://erlangen-crm.org/efrbroo/"):
         req = """
             PREFIX efrbroo: <http://erlangen-crm.org/efrbroo/>
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     
             SELECT ?resource ?object
             WHERE{
                 ?resource efrbroo:%s ?object.
+                ?resource rdf:type efrbroo:F22_Self-Contained_Expression
             }
         """
     elif (uriProperty == "http://purl.org/dc/terms/"):
         req = """
             PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX efrbroo: <http://erlangen-crm.org/efrbroo/>
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     
             SELECT ?resource ?object
             WHERE{
                 ?resource dcterms:%s ?object.
+                ?resource rdf:type efrbroo:F22_Self-Contained_Expression
             }
         """
     req = req % namespace
     results = graph.query(req)
+    # for r in results:
+    #     print(r)
     return results
+
+#getSubObjSource("http://erlangen-crm.org/current/P102_has_title",grapheSource)
 
 def comparaisonRessources(propertiesList, seuilChoosed, measuresList):
     valuesCompare = []
@@ -132,24 +151,26 @@ def comparaisonRessources(propertiesList, seuilChoosed, measuresList):
                     valuesCompare.append((ressourceS, valueS, ressourceC, valueC, prop, listMeasuresValues))
     i=0
     size=len(valuesCompare)
-    while i <len(valuesCompare):
-        item=valuesCompare[i]
-        property = item[4]
-        resS = item[0]
-        valueS = item[1]
-        resC = item[2]
-        valueC = item[3]
-        if str(property) == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" and str(valueS) != str(valueC):
-            del valuesCompare[i]
-            j=0
-            while j<size:
-                itemDelete=valuesCompare[j]
-                if itemDelete[0] == resS and itemDelete[2] == resC:
-                    valuesCompare.remove(itemDelete)
-                j+=1
-        i=+1
-    listMeasComparable = item[5]
+    print(size)
+    # while i <len(valuesCompare):
+    #     item=valuesCompare[i]
+    #     property = item[4]
+    #     resS = item[0]
+    #     valueS = item[1]
+    #     resC = item[2]
+    #     valueC = item[3]
+    #     # if str(property) == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" and str(valueS) != str(valueC):
+    #     #     del valuesCompare[i]
+    #     #     j=0
+    #     #     while j<size:
+    #     #         itemDelete=valuesCompare[j]
+    #     #         if itemDelete[0] == resS and itemDelete[2] == resC:
+    #     #             valuesCompare.remove(itemDelete)
+    #     #         j+=1
+    #     i=+1
+
     for item in valuesCompare:
+        listMeasComparable = item[5]
         for meas, v, c in listMeasComparable:
             #print(meas.__name__)
             if isinstance(item[1], rdflib.term.Literal) and isinstance(item[3], rdflib.term.Literal):
@@ -180,6 +201,7 @@ def comparaisonRessources(propertiesList, seuilChoosed, measuresList):
             sommeMoy+=m[1];
             compteur+=m[2]
         moyenne=sommeMoy/compteur
+        print(moyenne)
         if moyenne>=seuilChoosed:
             value[2]=moyenne
             print(moyenne)
@@ -187,6 +209,8 @@ def comparaisonRessources(propertiesList, seuilChoosed, measuresList):
             del dictRessourceMeasure[i]
         i+=1
     return dictRessourceMeasure
+
+
 
 def compareLiteral(value1, value2, measure):
     return measure(str(value1), str(value2))
@@ -198,7 +222,7 @@ def openResultFile(dicRessourceIdentique):
     with open('resultat.ttl', 'w') as file:
         file.write("@prefix owl: < http: // www.w3.org / 2002 / 07 / owl  # >\n")
         for key in dicRessourceIdentique:
-            file.write("<"+key[0]+">" + "owl:sameAs" + "<"+key[1]+">" + "\n")
+            file.write("<"+str(key[0][0])+">" + "owl:sameAs" + "<"+str(key[0][1])+">" + "\n")
 
 def calculPrecisionRappel():
     true_positives = 0
@@ -243,27 +267,29 @@ def calculPrecisionRappel():
     precision = true_positives / total1
     recall = true_positives / total2
     return [precision, recall]
+
 def fMeasure(precision, recall):
     return 2 * ((precision * recall) / (precision + recall))
 
-'''
+
 dic = comparaisonRessources(("http://erlangen-crm.org/current/P3_has_note",),  0.5, (m.levenshtein,))
 openResultFile(dic)
-for d in dic:
-    print(d)'''
+# for d in dic:
+#     print(d)
+calculPrecisionRappel()
 
-fileRef = open('referenceFile', 'r')
-fileResult = open('resultat.ttl', 'r')
-lignesRef = fileRef.readlines()
-lignesRes = fileResult.readlines()
-ressourcesSimRes=[]
-ressourcesSimRef=[]
-for ligne in lignesRes:
-    if "owl:sameAs" in ligne:
-        r1, r2 = ligne.split("owl:sameAs")
-        r1 = str(r1.strip("<>"))
-        r2 = str(r2.strip("<>"))
-        r2=r2[:-1]
-        #print(r1)
-        #print(r2)
+# fileRef = open('referenceFile', 'r')
+# fileResult = open('resultat.ttl', 'r')
+# lignesRef = fileRef.readlines()
+# lignesRes = fileResult.readlines()
+# ressourcesSimRes=[]
+# ressourcesSimRef=[]
+# for ligne in lignesRes:
+#     if "owl:sameAs" in ligne:
+#         r1, r2 = ligne.split("owl:sameAs")
+#         r1 = str(r1.strip("<>"))
+#         r2 = str(r2.strip("<>"))
+#         r2=r2[:-1]
+#         #print(r1)
+#         #print(r2)
 
