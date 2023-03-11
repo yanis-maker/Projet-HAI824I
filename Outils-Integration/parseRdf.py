@@ -4,6 +4,7 @@ from rdflib import Namespace, URIRef, Literal, BNode
 import SPARQLWrapper
 from SPARQLWrapper import SPARQLWrapper, JSON
 from rdflib.plugins.sparql import prepareQuery
+from measures import Jaro,JaroWinkler,Identity,Levenshtein,QGrams,Monge_elkan
 from measures import Measures
 import re
 
