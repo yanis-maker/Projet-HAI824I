@@ -1,6 +1,6 @@
 import rdflib
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import StringVar, filedialog
 from tkinter.ttk import *
 import tkinter.ttk as ttk
 
