@@ -200,6 +200,9 @@ def calculPrecisionRappel(resultFile, refFile):
             r1 = str(r1.strip("<>"))
             r2 = str(r2.strip("<>"))
             r2 = r2[:-1]
+            ressourcesSimRes.append((r1,r2))
+
+
     # PAS ENCORE FINI
     precision = true_positives / (true_positives + false_positives)
     recall = true_positives / (true_positives + false_negatives)
@@ -222,5 +225,6 @@ for ligne in lignesRes:
         r1 = str(r1.strip("<>"))
         r2 = str(r2.strip("<>"))
         r2=r2[:-1]
-        print(r1)
-        print(r2)
+        #print(r1)
+        #print(r2)
+
