@@ -175,6 +175,7 @@ def comparaisonRessources(propertiesList, seuilChoosed, measuresList):
             #print(meas.__name__)
             if isinstance(item[1], rdflib.term.Literal) and isinstance(item[3], rdflib.term.Literal):
                 measureValue = compareLiteral(item[1], item[3], meas)
+                print(measureValue)
                 listRessources = ((item[0]), (item[2]))
                 b=False
                 for value in dictRessourceMeasure:
@@ -201,7 +202,7 @@ def comparaisonRessources(propertiesList, seuilChoosed, measuresList):
             sommeMoy+=m[1];
             compteur+=m[2]
         moyenne=sommeMoy/compteur
-        print(moyenne)
+
         if moyenne>=seuilChoosed:
             value[2]=moyenne
             print(moyenne)
@@ -255,11 +256,11 @@ def calculPrecisionRappel():
     total1 = len(ressourcesSimRef)
     total2 = len(ressourcesSimRes)
     for couple in ressourcesSimRes:
-        print(couple)
+        #print(couple)
         if couple in ressourcesSimRef:
             true_positives += 1
-    for co in ressourcesSimRef:
-        print(co)
+    # for co in ressourcesSimRef:
+    #     print(co)
 
     # PAS ENCORE FINI
     # precision = true_positives / (true_positives + false_positives)
@@ -272,7 +273,7 @@ def fMeasure(precision, recall):
     return 2 * ((precision * recall) / (precision + recall))
 
 
-dic = comparaisonRessources(("http://erlangen-crm.org/current/P3_has_note",),  0.5, (m.levenshtein,))
+dic = comparaisonRessources(("http://erlangen-crm.org/current/P3_has_note",),  0.5, (m.jaro, ))
 openResultFile(dic)
 # for d in dic:
 #     print(d)
