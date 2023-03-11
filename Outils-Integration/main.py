@@ -10,6 +10,16 @@ import parseRdf
 
 pont = bridge.Bridge()
 
+propertySelected = []
+
+
+def selectionProp():
+    select = listbox_properties.get()
+    propertySelected.append(select)
+    varProperties.set("\n".join(propertySelected))
+    #label_propSelected.config(text="Propriétés sélectionnées :\n" + varProperties.get())
+    listbox_propSelect['values'] = propertySelected
+    print("Vous avez sélectionné : ", propertySelected)
 
 def validerSource():
   filepath = filedialog.askopenfilename(title="Ouvrir un fichier source")
@@ -111,8 +121,17 @@ canvas.create_window(120, 200,window=label_properties)
 listbox_properties = combo = ttk.Combobox(root, values=parseRdf.getAllProperty())
 canvas.create_window(120, 220,window=listbox_properties)
 
-#mesuresButton = tk.Button(canvas, text="Choix des mesures", bg="white")
-#canvas.create_window(350, 200, window=mesuresButton)
+varProperties = StringVar()
+#label_propSelected = tk.Label(root, text="Propriétés selectionné : \n"+varProperties.get(), bg="#263D42", fg="#FFFF00")
+label_propSelected = tk.Label(root, text="Propriétés selectionné : ", bg="#263D42", fg="#FFFF00")
+canvas.create_window(120, 240,window=label_propSelected)
+
+listbox_propSelect = ttk.Combobox(root, values = propertySelected)
+canvas.create_window(120, 260,window=listbox_propSelect)
+#Bouton pour ajouter une propriété a selectionner
+addPorpertyButton = tk.Button(canvas, text="Add", bg="white", command=selectionProp)
+canvas.create_window(210, 220, window=addPorpertyButton)
+
 
 varIdentity = tk.BooleanVar()
 varQgrams = tk.BooleanVar()
