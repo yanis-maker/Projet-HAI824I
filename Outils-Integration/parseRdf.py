@@ -174,20 +174,6 @@ def comparaisonRessources(propertiesList, seuilChoosed, measuresList):
 def compareLiteral(value1, value2, measure):
     return measure(str(value1), str(value2))
 
-dic = comparaisonRessources(("http://erlangen-crm.org/current/P3_has_note",),
-                            0.5, (m.levenshtein,))
-
-
-# compareURI(URIRef("http://data.doremus.org/expression/51cbf519-6243-303f-91f6-f70fe55a92d8"),
-#            URIRef("http://data.doremus.org/expression/c5548a52-1da2-348d-9eb0-311293232d05"), m.levenshtein)
-
-
-
-
-
-# compareBNode(URIRef("http://data.doremus.org/event/a7983848-efb9-3757-bdbf-cb068aed4219"),
-#              URIRef("http://data.doremus.org/event/a05cbd75-6238-3c6c-8683-f8c7aa5202a1"),
-#              URIRef("http://erlangen-crm.org/current/P9_consists_of"))
 
 
 def openResultFile(dicRessourceIdentique):
@@ -195,32 +181,46 @@ def openResultFile(dicRessourceIdentique):
     with open('resultat.ttl', 'w') as file:
         file.write("@prefix owl: < http: // www.w3.org / 2002 / 07 / owl  # >\n")
         for key in dicRessourceIdentique:
-            file.write("<"+key[0]+">" + " owl:sameAs " + "<"+key[1]+">" + "\n")
-
-
-openResultFile(dic)
-for d in dic:
-    print(d)
-
-
-# compareBNode(rdflib.term.BNode("n516b68b3b31b44c887c4e546191b53ebb3"),
-#              rdflib.term.BNode("n8bb2785687b644cf8527fad82d3be197b9"))
+            file.write("<"+key[0]+">" + "owl:sameAs" + "<"+key[1]+">" + "\n")
 
 def calculPrecisionRappel(resultFile, refFile):
     true_positives = 0
     false_positives = 0
     false_negatives = 0
     # TODO comparer les deux fichiers en terme des ressources et calcul des 3 variables déclarées ci-dessus
-    fileRef = open('reference_file.ttl', 'r')
+    fileRef = open('referenceFile', 'r')
     fileResult = open('resultat.ttl', 'r')
     lignesRef = fileRef.readlines()
     lignesRes = fileResult.readlines()
-    for ligneRef in lignesRef:
-        for lignesRes in lignesRes:
-            print("" + lignesRes + "\n")
-
+    ressourcesSimRes=[]
+    ressourcesSimRef=[]
+    for ligne in lignesRes:
+        if "owl:sameAs" in ligne:
+            r1, r2 = ligne.split("owl:sameAs")
+            r1 = str(r1.strip("<>"))
+            r2 = str(r2.strip("<>"))
+            r2 = r2[:-1]
     # PAS ENCORE FINI
     precision = true_positives / (true_positives + false_positives)
     recall = true_positives / (true_positives + false_negatives)
-
     return [precision, recall]
+'''
+dic = comparaisonRessources(("http://erlangen-crm.org/current/P3_has_note",),  0.5, (m.levenshtein,))
+openResultFile(dic)
+for d in dic:
+    print(d)'''
+
+fileRef = open('referenceFile', 'r')
+fileResult = open('resultat.ttl', 'r')
+lignesRef = fileRef.readlines()
+lignesRes = fileResult.readlines()
+ressourcesSimRes=[]
+ressourcesSimRef=[]
+for ligne in lignesRes:
+    if "owl:sameAs" in ligne:
+        r1, r2 = ligne.split("owl:sameAs")
+        r1 = str(r1.strip("<>"))
+        r2 = str(r2.strip("<>"))
+        r2=r2[:-1]
+        print(r1)
+        print(r2)
