@@ -195,7 +195,7 @@ def openResultFile(dicRessourceIdentique):
     with open('resultat.ttl', 'w') as file:
         file.write("@prefix owl: < http: // www.w3.org / 2002 / 07 / owl  # >\n")
         for key in dicRessourceIdentique:
-            file.write(key[0] + "owl:sameAs" + key[1] + "\n")
+            file.write("<"+key[0]+">" + " owl:sameAs " + "<"+key[1]+">" + "\n")
 
 
 openResultFile(dic)
@@ -218,6 +218,7 @@ def calculPrecisionRappel(resultFile, refFile):
     for ligneRef in lignesRef:
         for lignesRes in lignesRes:
             print("" + lignesRes + "\n")
+
     # PAS ENCORE FINI
     precision = true_positives / (true_positives + false_positives)
     recall = true_positives / (true_positives + false_negatives)
