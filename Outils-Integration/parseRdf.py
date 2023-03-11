@@ -111,18 +111,16 @@ def getSubObjSource(property, graph):
     results = graph.query(req)
     return results
 
-
 def comparaisonRessources(propertiesList, seuilChoosed, measuresList):
-    m = Measures(seuilChoosed)
     valuesCompare = []
-    dictRessourceMeasure = dict()
+    dictRessourceMeasure = []
     identiqueValue = []
     strS = None
     strC = None
     measureValue = 0
     listMeasuresValues = []
     for measure in measuresList:
-        listMeasuresValues.append((measure, 0))
+        listMeasuresValues.append([measure, 0, 0])
 
     for prop in propertiesList:
         listSource = getSubObjSource(prop, grapheSource)
@@ -130,45 +128,64 @@ def comparaisonRessources(propertiesList, seuilChoosed, measuresList):
         for ressourceS, valueS in listSource:
             for ressourceC, valueC in listCible:
                 if not isinstance(ressourceC,BNode) and not isinstance(ressourceS,BNode) and isinstance(valueC, rdflib.term.Literal) and isinstance(valueS, rdflib.term.Literal):
-                    print(prop)
+                    #print(prop)
                     valuesCompare.append((ressourceS, valueS, ressourceC, valueC, prop, listMeasuresValues))
-
-
-    for item in valuesCompare:
+    i=0
+    size=len(valuesCompare)
+    while i <len(valuesCompare):
+        item=valuesCompare[i]
         property = item[4]
         resS = item[0]
         valueS = item[1]
         resC = item[2]
         valueC = item[3]
         if str(property) == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" and str(valueS) != str(valueC):
-            valuesCompare.remove(item)
-            for itemDelete in valuesCompare:
+            del valuesCompare[i]
+            j=0
+            while j<size:
+                itemDelete=valuesCompare[j]
                 if itemDelete[0] == resS and itemDelete[2] == resC:
                     valuesCompare.remove(itemDelete)
-
+                j+=1
+        i=+1
+    listMeasComparable = item[5]
     for item in valuesCompare:
-        listMeasComparable = item[5]
-            #print("Ca rentre")
-        for meas, v in listMeasComparable:
-            print(meas.__name__)
+        for meas, v, c in listMeasComparable:
+            #print(meas.__name__)
             if isinstance(item[1], rdflib.term.Literal) and isinstance(item[3], rdflib.term.Literal):
                 measureValue = compareLiteral(item[1], item[3], meas)
-                listRessources = (item[0], item[2])
-                if listRessources in dictRessourceMeasure:
-                    for cle, list in dictRessourceMeasure.items():
-                        if cle==listRessources:
-                            if list[0] == meas:
-                                list[1] += measureValue
-                                list[2] += 1
-                else:
-                    dictRessourceMeasure[listRessources] = [meas, measureValue, 1]
-
-
-    for key, list in dictRessourceMeasure.items():
-            list[1] /= list[2]
-            # if list[1] < seuilChoosed:
-            #     del dictRessourceMeasure[key]
-
+                listRessources = ((item[0]), (item[2]))
+                b=False
+                for value in dictRessourceMeasure:
+                    if value[0][0]==listRessources[0] and value[0][1]==listRessources[1]:
+                        b=True
+                        if value[1][0] == meas:
+                            value[1][1] += measureValue
+                            value[1][2] += 1
+                if not b :
+                    listMeas=listMeasComparable
+                    for m in listMeas:
+                        if m[0]==meas:
+                            m[1]=measureValue
+                            m[2]=1
+                            dictRessourceMeasure.append([listRessources,listMeas,0])
+    i=0
+    while i<len(dictRessourceMeasure):
+        sommeMoy = 0
+        compteur=0
+        moyenne=0
+        value=dictRessourceMeasure[i]
+        v=value[1]
+        for m in v:
+            sommeMoy+=m[1];
+            compteur+=m[2]
+        moyenne=sommeMoy/compteur
+        if moyenne>=seuilChoosed:
+            value[2]=moyenne
+            print(moyenne)
+        else :
+            del dictRessourceMeasure[i]
+        i+=1
     return dictRessourceMeasure
 
 def compareLiteral(value1, value2, measure):
@@ -183,7 +200,7 @@ def openResultFile(dicRessourceIdentique):
         for key in dicRessourceIdentique:
             file.write("<"+key[0]+">" + "owl:sameAs" + "<"+key[1]+">" + "\n")
 
-def calculPrecisionRappel(resultFile, refFile):
+def calculPrecisionRappel():
     true_positives = 0
     false_positives = 0
     false_negatives = 0
@@ -192,22 +209,43 @@ def calculPrecisionRappel(resultFile, refFile):
     fileResult = open('resultat.ttl', 'r')
     lignesRef = fileRef.readlines()
     lignesRes = fileResult.readlines()
-    ressourcesSimRes=[]
-    ressourcesSimRef=[]
-    for ligne in lignesRes:
-        if "owl:sameAs" in ligne:
-            r1, r2 = ligne.split("owl:sameAs")
-            r1 = str(r1.strip("<>"))
-            r2 = str(r2.strip("<>"))
-            r2 = r2[:-1]
-            #ici r2 a toujours le ">" collé a la fin faut enlever ça
-            ressourcesSimRes.append((r1,r2))
-
+    ressourcesSimRes = []
+    ressourcesSimRef = []
+    # Pour le fichier résultat
+    for line in lignesRes:
+        match = re.match(r"<(.+)>owl:sameAs<(.+)>", line)
+        if match:
+            r1 = match.group(1)
+            r2 = match.group(2)
+            ressourcesSimRes.append((r1, r2))
+    # Pour le fichier référence
+    i = 0
+    while i < len(lignesRef):
+        if "<entity1" in lignesRef[i]:
+            # Utilisation d'une regex pour extraire les URIs
+            r1 = re.search('rdf:resource="(.*?)"', lignesRef[i]).group(1)
+            r2 = re.search('rdf:resource="(.*?)"', lignesRef[i + 1]).group(1)
+            ressourcesSimRef.append((r1, r2))
+        i += 1
+    # Calcul TP, FP, FN
+    total1 = len(ressourcesSimRef)
+    total2 = len(ressourcesSimRes)
+    for couple in ressourcesSimRes:
+        print(couple)
+        if couple in ressourcesSimRef:
+            true_positives += 1
+    for co in ressourcesSimRef:
+        print(co)
 
     # PAS ENCORE FINI
-    precision = true_positives / (true_positives + false_positives)
-    recall = true_positives / (true_positives + false_negatives)
+    # precision = true_positives / (true_positives + false_positives)
+    # recall = true_positives / (true_positives + false_negatives)
+    precision = true_positives / total1
+    recall = true_positives / total2
     return [precision, recall]
+def fMeasure(precision, recall):
+    return 2 * ((precision * recall) / (precision + recall))
+
 '''
 dic = comparaisonRessources(("http://erlangen-crm.org/current/P3_has_note",),  0.5, (m.levenshtein,))
 openResultFile(dic)
