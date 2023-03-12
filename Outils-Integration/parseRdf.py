@@ -24,7 +24,24 @@ def parseSource():
         if namespace not in propertySource:
             propertySource.append(namespace)
 
-    return propertySource
+    req = """
+        PREFIX efrbroo: <http://erlangen-crm.org/efrbroo/>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+        SELECT DISTINCT ?property
+        WHERE{
+            ?resource ?property ?object.
+            ?resource rdf:type efrbroo:F22_Self-Contained_Expression
+        }
+    """
+
+    result = grapheSource.query(req)
+    resultFinal = []
+    for r in result:
+        if (str(r[0]) != "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"):
+            resultFinal.append(str(r[0]))
+
+    return resultFinal
 
 
 def parseCible():
@@ -35,7 +52,23 @@ def parseCible():
         if namespace not in propertyCible:
             propertyCible.append(namespace)
 
-    return propertyCible
+    req = """
+            PREFIX efrbroo: <http://erlangen-crm.org/efrbroo/>
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+            SELECT DISTINCT  ?property
+            WHERE{
+                ?resource ?property ?object.
+                ?resource rdf:type efrbroo:F22_Self-Contained_Expression
+            }
+        """
+
+    result = grapheCible.query(req)
+    resultFinal = []
+    for r in result:
+        if (str(r[0]) != "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"):
+            resultFinal.append(str(r[0]))
+    return resultFinal
 
 
 def getAllProperty():
@@ -46,6 +79,11 @@ def getAllProperty():
         for pc in propertyCible:
             if ps != pc and pc not in commonProprety:
                 commonProprety.append(pc)
+
+    # commonProprety.remove("http://data.doremus.org/ontology#U13_has_casting")
+    # commonProprety.remove("http://data.doremus.org/ontology#U17_has_opus_statement")
+    # commonProprety.remove("http://data.doremus.org/ontology#U16_has_catalogue_statement")
+    # commonProprety.remove("http://erlangen-crm.org/current/P67_refers_to")
 
     return commonProprety
 #commonProprety=["Title","Key","Note","Composer","Genre","Opus",""]
@@ -294,9 +332,8 @@ def calculPrecisionRappel():
     f_measure=2 * (precision * recall) / (precision + recall)
     return [precision, recall,f_measure]
 
-#compare(("http://data.doremus.org/ontology#U11_has_key",),  0.1, (2,))
-dic=compare(("http://erlangen-crm.org/current/P102_has_title",),  0.65, (0,))
-openResultFile(dic)
+#dic=compare(("http://erlangen-crm.org/current/P102_has_title",),0.3, (4,))
+# openResultFile(dic)
 # # for d in dic:
 # #     print(d)
 print(calculPrecisionRappel())
