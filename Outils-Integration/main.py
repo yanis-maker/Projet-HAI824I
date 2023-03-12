@@ -13,6 +13,10 @@ pont = bridge.Bridge()
 propertySelected = []
 
 
+def confirm(properties, seuil, measures):
+    result = parseRdf.compare(properties, seuil, measures)
+    parseRdf.openResultFile(result)
+
 def selectionProp():
     select = listbox_properties.get()
     if(select not in propertySelected):
@@ -188,7 +192,8 @@ checkMongeElkan = tk.Checkbutton(canvas,
                                  command=lambda: on_checked(varMongeElkan, 5))
 canvas.create_window(350, 320, window=checkMongeElkan)
 
-confirmButton = tk.Button(root, text="Confirmer")
+confirmButton = tk.Button(root, text="Confirmer",
+                          command=lambda: confirm(propertySelected, pont.getSeuil(), pont.getListSimilarity()))
 confirmButton.pack()
 
 root.mainloop()
