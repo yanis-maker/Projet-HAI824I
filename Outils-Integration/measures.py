@@ -1,5 +1,5 @@
 import nltk
-#import py_stringmatching
+import py_stringmatching as psm
 from nltk.metrics.distance import jaro_winkler_similarity
 #from py_stringmatching import Jaccard
 from sklearn.feature_extraction.text import TfidfVectorizer
