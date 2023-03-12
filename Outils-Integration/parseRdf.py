@@ -20,7 +20,7 @@ uriU12="http://data.doremus.org/ontology#U12_has_genre"
 def parseSource():
     propertySource = []
     for s, p, o in grapheSource:
-        namespace = grapheSource.namespace_manager.normalizeUri(p)
+         namespace = p
         if namespace not in propertySource:
             propertySource.append(namespace)
 
@@ -31,7 +31,7 @@ def parseCible():
     propertyCible = []
 
     for s, p, o in grapheCible:
-        namespace = grapheCible.namespace_manager.normalizeUri(p)
+         namespace = p
         if namespace not in propertyCible:
             propertyCible.append(namespace)
 
