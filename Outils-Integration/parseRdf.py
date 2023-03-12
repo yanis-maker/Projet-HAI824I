@@ -332,7 +332,7 @@ def calculPrecisionRappel():
     f_measure=2 * (precision * recall) / (precision + recall)
     return [precision, recall,f_measure]
 
-#dic=compare(("http://erlangen-crm.org/current/P102_has_title",),0.3, (4,))
+# dic=compare(("http://erlangen-crm.org/current/P102_has_title",),0.6, (1,))
 # openResultFile(dic)
 # # for d in dic:
 # #     print(d)

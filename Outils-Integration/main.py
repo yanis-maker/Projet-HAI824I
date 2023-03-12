@@ -27,7 +27,7 @@ def find_url_by_last_part(urls, last_part):#Fonction inverse de get_last_part_of
     return None
 
 def confirm(properties, seuil, measures):
-    result = parseRdf.compare(properties, seuil, measures)
+    result = parseRdf.compare(properties, float(seuil), measures)
     parseRdf.openResultFile(result)
 
 def selectionProp():
