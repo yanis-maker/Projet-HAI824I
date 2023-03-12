@@ -4,15 +4,14 @@ from rdflib import Namespace, URIRef, Literal, BNode
 import SPARQLWrapper
 from SPARQLWrapper import SPARQLWrapper, JSON
 from rdflib.plugins.sparql import prepareQuery
-#from measures import Jaro,JaroWinkler,Identity,Levenshtein,QGrams,Monge_elkan
-from measures import Measures
+from measures import Jaro,JaroWinkler,Identity,Levenshtein,QGrams,Monge_elkan
 import re
 
 grapheSource = rdf.Graph()
 grapheSource.parse("source.ttl", format="turtle")
 grapheCible = rdf.Graph()
 grapheCible.parse("cible.ttl", format="turtle")
-m = Measures(3)
+
 
 
 def parseSource():
@@ -130,101 +129,100 @@ def getSubObjSource(property, graph):
     return results
 
 #getSubObjSource("http://erlangen-crm.org/current/P102_has_title",grapheSource)
-
-def comparaisonRessources(propertiesList, seuilChoosed, measuresList):
-    valuesCompare = []
-    dictRessourceMeasure = []
-    identiqueValue = []
-    strS = None
-    strC = None
-    measureValue = 0
-    listMeasuresValues = []
+def compare(propertiesList, seuilChoosed, measuresList):
+    jaro=False
+    jaroWinkler=False
+    identity=False
+    levenshtein=False
+    qGrams=False
+    monge_elkan=False
     for measure in measuresList:
-        listMeasuresValues.append([measure, 0, 0])
-
+       print("hi")
+       if measure==0:
+           jaro=True
+           print("true")
+       elif measure==1:
+           jaroWinkler=True
+           print("true")
+       elif measure==2 :
+           identity=True
+       elif measure==3:
+           levenshtein=True
+       elif measure==4:
+           qGrams=True
+       elif measure==5 :
+            monge_elkan=True
+    valuesCompare = []
+    listFinaleMeasure = []
     for prop in propertiesList:
         listSource = getSubObjSource(prop, grapheSource)
         listCible = getSubObjSource(prop, grapheCible)
-        for ressourceS, valueS in listSource:
+        print(prop)
+        for ressourceS,valueS in listSource:
             for ressourceC, valueC in listCible:
-                if not isinstance(ressourceC,BNode) and not isinstance(ressourceS,BNode) and isinstance(valueC, rdflib.term.Literal) and isinstance(valueS, rdflib.term.Literal):
-                    #print(prop)
-                    valuesCompare.append((ressourceS, valueS, ressourceC, valueC, prop, listMeasuresValues))
+                sommeMeasure=0
+                compteur=0
+                #if not isinstance(ressourceC, BNode) and not isinstance(ressourceS, BNode) and isinstance(valueC,rdflib.term.Literal) and isinstance(valueS, rdflib.term.Literal):
+                    # print(prop)
+                if jaro:
+                    sommeMeasure += compareLiteral(valueS, valueC, Jaro)
+                    compteur += 1
+                    print(compteur)
+                if jaroWinkler:
+                    sommeMeasure += compareLiteral(valueS, valueC, JaroWinkler)
+                    compteur += 1
+                    print(compteur)
+                if identity:
+                    sommeMeasure += compareLiteral(valueS, valueC, Identity)
+                    compteur += 1
+                if levenshtein:
+                    sommeMeasure += compareLiteral(valueS, valueC, Levenshtein)
+                    compteur += 1
+                if qGrams:
+                    sommeMeasure += compareLiteral(valueS, valueC, QGrams)
+                    compteur += 1
+                if monge_elkan:
+                    sommeMeasure += compareLiteral(valueS, valueC, Monge_elkan)
+                    compteur += 1
+            valuesCompare.append((ressourceS, ressourceC,sommeMeasure,compteur))
     i=0
     size=len(valuesCompare)
-    print(size)
-    # while i <len(valuesCompare):
-    #     item=valuesCompare[i]
-    #     property = item[4]
-    #     resS = item[0]
-    #     valueS = item[1]
-    #     resC = item[2]
-    #     valueC = item[3]
-    #     # if str(property) == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" and str(valueS) != str(valueC):
-    #     #     del valuesCompare[i]
-    #     #     j=0
-    #     #     while j<size:
-    #     #         itemDelete=valuesCompare[j]
-    #     #         if itemDelete[0] == resS and itemDelete[2] == resC:
-    #     #             valuesCompare.remove(itemDelete)
-    #     #         j+=1
-    #     i=+1
-
-    for item in valuesCompare:
-        listMeasComparable = item[5]
-        for meas, v, c in listMeasComparable:
-            #print(meas.__name__)
-            if isinstance(item[1], rdflib.term.Literal) and isinstance(item[3], rdflib.term.Literal):
-                measureValue = compareLiteral(item[1], item[3], meas)
-                #print(measureValue)
-                listRessources = ((item[0]), (item[2]))
-                b=False
-                for value in dictRessourceMeasure:
-                    if value[0][0]==listRessources[0] and value[0][1]==listRessources[1]:
-                        b=True
-                        if value[1][0] == meas:
-                            value[1][1] += measureValue
-                            value[1][2] += 1
-                if not b :
-                    listMeas=listMeasComparable
-                    for m in listMeas:
-                        if m[0]==meas:
-                            m[1]=measureValue
-                            m[2]=1
-                            dictRessourceMeasure.append([listRessources,listMeas,0])
-    i=0
-    while i<len(dictRessourceMeasure):
-        sommeMoy = 0
-        compteur=0
-        moyenne=0
-        value=dictRessourceMeasure[i]
-        v=value[1]
-        for m in v:
-            sommeMoy+=m[1];
-            compteur+=m[2]
-        moyenne=sommeMoy/compteur
-
-        if moyenne>=seuilChoosed:
-            value[2]=moyenne
-            #print(moyenne)
-        else :
-            del dictRessourceMeasure[i]
-        i+=1
-    return dictRessourceMeasure
-
-
+    somme=0
+    compteur=0
+    while i<len(valuesCompare) :
+        j=i+1
+        valuei=valuesCompare[i]
+        ressourceSi=valuei[0]
+        ressourceCi=valuei[1]
+        somme=valuei[2]
+        compteur=valuei[3]
+        del valuesCompare[i]
+        while j<len(valuesCompare):
+            if i<(len(valuesCompare)-1) :
+                valuej = valuesCompare[j]
+                ressourceSj = valuej[0]
+                ressourceCj = valuej[1]
+                if (ressourceSi==ressourceSj) and (ressourceCj==ressourceCi):
+                    somme+=valuej[2]
+                    compteur+=valuej[3]
+                del valuesCompare[j]
+            j += 1
+        moyenne=somme/compteur
+        if moyenne>=seuilChoosed :
+            print(moyenne)
+            listFinaleMeasure.append([ressourceSi,ressourceCi,moyenne])
+        i=i+1
+    return listFinaleMeasure
 
 def compareLiteral(value1, value2, measure):
     return measure(str(value1), str(value2))
-
-
 
 def openResultFile(dicRessourceIdentique):
     # Afficher les préfixes
     with open('resultat.ttl', 'w') as file:
         file.write("@prefix owl: < http: // www.w3.org / 2002 / 07 / owl  # >\n")
         for key in dicRessourceIdentique:
-            file.write("<"+str(key[0][0])+">" + "owl:sameAs" + "<"+str(key[0][1])+">" + "\n")
+            file.write("<"+str(key[0])+">" + "owl:sameAs" + "<"+str(key[1])+">" + "\n")
 
 def calculPrecisionRappel():
     true_positives = 0
@@ -274,24 +272,10 @@ def fMeasure(precision, recall):
     return 2 * ((precision * recall) / (precision + recall))
 
 
-dic = comparaisonRessources(("http://erlangen-crm.org/current/P3_has_note","http://erlangen-crm.org/current/P102_has_title"),  0.5, (m.jaroWinkler,m.jaro))
+dic = compare(("http://erlangen-crm.org/current/P102_has_title",),  0.1, (0,))
 openResultFile(dic)
 # for d in dic:
 #     print(d)
 calculPrecisionRappel()
 
-# fileRef = open('referenceFile', 'r')
-# fileResult = open('resultat.ttl', 'r')
-# lignesRef = fileRef.readlines()
-# lignesRes = fileResult.readlines()
-# ressourcesSimRes=[]
-# ressourcesSimRef=[]
-# for ligne in lignesRes:
-#     if "owl:sameAs" in ligne:
-#         r1, r2 = ligne.split("owl:sameAs")
-#         r1 = str(r1.strip("<>"))
-#         r2 = str(r2.strip("<>"))
-#         r2=r2[:-1]
-#         #print(r1)
-#         #print(r2)
 
