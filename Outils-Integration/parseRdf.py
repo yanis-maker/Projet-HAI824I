@@ -4,7 +4,7 @@ from rdflib import Namespace, URIRef, Literal, BNode
 import SPARQLWrapper
 from SPARQLWrapper import SPARQLWrapper, JSON
 from rdflib.plugins.sparql import prepareQuery
-from measures import Jaro,JaroWinkler,Identity,Levenshtein,QGrams,Monge_elkan,Jaccard
+from measures import Jaro,JaroWinkler,Identity,Levenshtein,QGrams,Monge_elkan,Jaccard,Tokenisation
 import re
 
 grapheSource = rdf.Graph()
@@ -12,6 +12,9 @@ grapheSource.parse("source.ttl", format="turtle")
 grapheCible = rdf.Graph()
 grapheCible.parse("cible.ttl", format="turtle")
 
+mus="http://data.doremus.org/ontology#"
+uriU11="http://data.doremus.org/ontology#U11_has_key"
+uriU12="http://data.doremus.org/ontology#U12_has_genre"
 
 
 def parseSource():
@@ -45,6 +48,14 @@ def getAllProperty():
                 commonProprety.append(pc)
 
     return commonProprety
+
+def isValueMus(prop,uri):
+    if str(prop)==uriU11:
+        return True
+    if str(prop)==uriU12 and str(uri).find("http://data.doremus.org/vocabulary/iaml/genre/")!=-1:
+        return True
+    else :
+        return False
 
 
 def getSubObjSource(property, graph):
@@ -128,8 +139,11 @@ def getSubObjSource(property, graph):
     #     print(r)
     return results
 
+
+
 #getSubObjSource("http://erlangen-crm.org/current/P102_has_title",grapheSource)
 def compare(propertiesList, seuilChoosed, measuresList):
+
     jaro=False
     jaroWinkler=False
     identity=False
@@ -165,30 +179,13 @@ def compare(propertiesList, seuilChoosed, measuresList):
                 compteur=0
                 if isinstance(valueC,rdflib.term.Literal) and isinstance(valueS, rdflib.term.Literal):
                     #print(prop)
-                    if jaro:
-                        sommeMeasure += compareLiteral(valueS, valueC, Jaro)
-                        compteur += 1
-                        print(compteur)
-                    if jaroWinkler:
-                        sommeMeasure += compareLiteral(valueS, valueC, JaroWinkler)
-                        compteur += 1
-                        print(compteur)
-                    if identity:
-                        sommeMeasure += compareLiteral(valueS, valueC, Identity)
-                        compteur += 1
-                    if levenshtein:
-                        sommeMeasure += compareLiteral(valueS, valueC, Levenshtein)
-                        compteur += 1
-                    if qGrams:
-                        sommeMeasure += compareLiteral(valueS, valueC, QGrams)
-                        compteur += 1
-                    if monge_elkan:
-                        sommeMeasure += compareLiteral(valueS, valueC, Monge_elkan)
-                        compteur += 1
-                    if jaccard:
-                        sommeMeasure += compareLiteral(valueS, valueC, Jaccard)
-                        compteur += 1
-                    valuesCompare.append((ressourceS, ressourceC,sommeMeasure,compteur))
+                    res=useMeasure(str(valueS),str(valueC),jaro,jaroWinkler,identity,levenshtein,qGrams,monge_elkan)
+                    valuesCompare.append((ressourceS, ressourceC,res[1],res[0]))
+                elif isinstance(valueS,URIRef) and isinstance(valueC,URIRef) and isValueMus(prop,valueS):
+                    valueSTokend=Tokenisation(valueS)
+                    valueCTokend=Tokenisation(valueC)
+                    res=useMeasure(valueSTokend,valueCTokend,jaro,jaroWinkler,identity,levenshtein,qGrams,monge_elkan)
+                    valuesCompare.append((ressourceS, ressourceC, res[1], res[0]))
     i=0
     size=len(valuesCompare)
     somme=0
@@ -218,8 +215,37 @@ def compare(propertiesList, seuilChoosed, measuresList):
         i=i+1
     return listFinaleMeasure
 
+
 def compareLiteral(value1, value2, measure):
-    return measure(str(value1), str(value2))
+    return measure(value1, value2)
+def useMeasure(valueS,valueC,jaro,jaroWinkler,identity,levenshtein,qGrams,monge_elkan,jaccard):
+    compteur=0
+    sommeMeasure=0
+    if jaro:
+        sommeMeasure += compareLiteral(valueS,valueC, Jaro)
+        compteur += 1
+        print(compteur)
+    if jaroWinkler:
+        sommeMeasure += compareLiteral(valueS,valueC, JaroWinkler)
+        compteur += 1
+        print(compteur)
+    if identity:
+        sommeMeasure += compareLiteral(valueS,valueC, Identity)
+        compteur += 1
+    if levenshtein:
+        sommeMeasure += compareLiteral(valueS,valueC, Levenshtein)
+        compteur += 1
+    if qGrams:
+        sommeMeasure += compareLiteral(valueS,valueC, QGrams)
+        compteur += 1
+    if monge_elkan:
+        sommeMeasure += compareLiteral(valueS,valueC, Monge_elkan)
+        compteur += 1
+    if jaccard:
+        sommeMeasure += compareLiteral(valueS,valueC, Jaccard)
+        compteur += 1
+    return [compteur,sommeMeasure]
+
 
 def openResultFile(dicRessourceIdentique):
     # Afficher les préfixes

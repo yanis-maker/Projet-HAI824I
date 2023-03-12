@@ -112,7 +112,19 @@ def Monge_elkan(s1,s2,sim_func):
     sim /= len(words1)
     return sim
 
+def Tokenisation(uri):
+    uriStr=str(uri)
+    if(uriStr.find("http://data.doremus.org/vocabulary/key/")!=-1):
+        list = uri.split("/")
+        value = list[len(list) - 1]
+        uriProperty = "/".join(list) + "/"
+        return value
+    if(uriStr.find("http://data.doremus.org/vocabulary/iaml/genre/")!=-1):
+        list = uri.split("/")
+        value = list[len(list) - 1]
+        return value
 
+print(Tokenisation("http://data.doremus.org/vocabulary/iaml/genre/salut"))
 #print(m.jaccard("amadus mozart","a.mozart"))
 # print(m.jaro("amadus mozart","a.mozart"))
 # print(m.jaroWinkler("amadus mozart","a.mozart"))
