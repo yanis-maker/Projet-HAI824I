@@ -12,6 +12,12 @@ pont = bridge.Bridge()
 
 propertySelected = []
 
+def get_last_part_of_url(urls):
+    """Renvoie une liste avec uniquement la dernière partie de chaque URL dans la liste d'entrée"""
+    last_parts = []
+    for url in urls:
+        last_parts.append(url.split('/')[-1])
+    return last_parts
 
 def confirm(properties, seuil, measures):
     result = parseRdf.compare(properties, seuil, measures)
@@ -123,7 +129,7 @@ canvas.create_window(120, 200,window=label_properties)
 #label_properties.pack()
 
 # Création de la liste déroulante contenant les propriétés communes
-listbox_properties = combo = ttk.Combobox(root, values=parseRdf.getAllProperty())
+listbox_properties = combo = ttk.Combobox(root,  values=get_last_part_of_url(parseRdf.getAllProperty()),width=len(max(parseRdf.getAllProperty(),key=len)))
 canvas.create_window(120, 220,window=listbox_properties)
 
 varProperties = StringVar()
@@ -131,7 +137,7 @@ varProperties = StringVar()
 label_propSelected = tk.Label(root, text="Propriétés selectionné : ", bg="#263D42", fg="#FFFF00")
 canvas.create_window(120, 240,window=label_propSelected)
 
-listbox_propSelect = ttk.Combobox(root, values = propertySelected)
+listbox_propSelect = ttk.Combobox(root, values = get_last_part_of_url(propertySelected),width=len(max(parseRdf.getAllProperty(),key=len)))
 canvas.create_window(120, 260,window=listbox_propSelect)
 #Bouton pour ajouter une propriété a selectionner
 addPorpertyButton = tk.Button(canvas, text="Add", bg="white", command=selectionProp)
