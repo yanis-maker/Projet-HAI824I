@@ -20,8 +20,7 @@ def selectionProp():
       varProperties.set("\n".join(propertySelected))
       #label_propSelected.config(text="Propriétés sélectionnées :\n" + varProperties.get())
       listbox_propSelect['values'] = propertySelected
-      #print("Vous avez sélectionné : ", propertySelected)
-      print("VarPropeties = ",varProperties.get())
+      print("Vous avez sélectionné : ", propertySelected)
 
 def validerSource():
   filepath = filedialog.askopenfilename(title="Ouvrir un fichier source")
