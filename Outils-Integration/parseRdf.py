@@ -175,7 +175,7 @@ def compare(propertiesList, seuilChoosed, measuresList):
                 sommeMeasure=0
                 compteur=0
                 if (not isinstance(valueC, BNode) and not isinstance(valueS, BNode)):
-                    print(valueS + "    ############    " + valueC)
+                    #print(valueS + "    ############    " + valueC)
                     if isinstance(valueC, rdflib.term.Literal) and isinstance(valueS, rdflib.term.Literal):
                         # print(prop)
                         res = useMeasure(str(valueS), str(valueC), jaro, jaroWinkler, identity, levenshtein, qGrams,
@@ -187,6 +187,9 @@ def compare(propertiesList, seuilChoosed, measuresList):
                         res = useMeasure(valueSTokend, valueCTokend, jaro=0, jaroWinkler=0, identity=1, levenshtein=0,
                                          qGrams=0, monge_elkan=0)
                         valuesCompare.append((ressourceS, ressourceC, res[1], res[0]))
+
+    for v in valuesCompare:
+        print(str(v[0])+"    "+str(v[1])+"  ====== "+str(v[2])+" ; "+str(v[3]))
 
     i=0
     size=len(valuesCompare)
@@ -205,21 +208,24 @@ def compare(propertiesList, seuilChoosed, measuresList):
                 valuej = valuesCompare[j]
                 ressourceSj = valuej[0]
                 ressourceCj = valuej[1]
-                if (ressourceSi==ressourceSj) and (ressourceCj==ressourceCi):
+                if (str(ressourceSi)==str(ressourceSj)) and (str(ressourceCj)==str(ressourceCi)):
                     somme+=valuej[2]
                     compteur+=valuej[3]
+                    # print(str(ressourceSi)+"   "+str(ressourceCi)+" ======  "+str(somme)+"     "+str(compteur))
                 del valuesCompare[j]
             j += 1
         moyenne=somme/compteur
         if moyenne>=seuilChoosed :
             listFinaleMeasure.append([ressourceSi,ressourceCi,moyenne])
         i=i+1
+
+        # for li in listFinaleMeasure
     return listFinaleMeasure
 
 
 def compareLiteral(value1, value2, measure):
     return measure(value1, value2)
-def useMeasure(valueS,valueC,jaro,jaroWinkler,identity,levenshtein,qGrams,monge_elkan,jaccard):
+def useMeasure(valueS,valueC,jaro,jaroWinkler,identity,levenshtein,qGrams,monge_elkan):
     compteur=0
     sommeMeasure=0
     if jaro:
@@ -241,9 +247,9 @@ def useMeasure(valueS,valueC,jaro,jaroWinkler,identity,levenshtein,qGrams,monge_
     if monge_elkan:
         sommeMeasure += compareLiteral(valueS,valueC, Monge_elkan)
         compteur += 1
-    if jaccard:
-        sommeMeasure += compareLiteral(valueS,valueC, Jaccard)
-        compteur += 1
+    # if jaccard:
+    #     sommeMeasure += compareLiteral(valueS,valueC, Jaccard)
+    #     compteur += 1
     return [compteur,sommeMeasure]
 
 
