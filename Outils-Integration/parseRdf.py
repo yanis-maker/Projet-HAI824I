@@ -136,7 +136,7 @@ def getSubObjSource(property, graph):
     req = req % namespace
     results = graph.query(req)
     # for r in results:
-    #     print(r)
+    #     (r)
     return results
 
 
@@ -152,13 +152,10 @@ def compare(propertiesList, seuilChoosed, measuresList):
     monge_elkan=False
     jaccard=False
     for measure in measuresList:
-       print("hi")
        if measure==0:
            jaro=True
-           print("true")
        elif measure==1:
            jaroWinkler=True
-           print("true")
        elif measure==2 :
            identity=True
        elif measure==3:
@@ -172,7 +169,7 @@ def compare(propertiesList, seuilChoosed, measuresList):
     for prop in propertiesList:
         listSource = getSubObjSource(prop, grapheSource)
         listCible = getSubObjSource(prop, grapheCible)
-        print(prop)
+
         for ressourceS,valueS in listSource:
             for ressourceC, valueC in listCible:
                 sommeMeasure=0
@@ -215,7 +212,6 @@ def compare(propertiesList, seuilChoosed, measuresList):
             j += 1
         moyenne=somme/compteur
         if moyenne>=seuilChoosed :
-            print(moyenne)
             listFinaleMeasure.append([ressourceSi,ressourceCi,moyenne])
         i=i+1
     return listFinaleMeasure
@@ -229,11 +225,10 @@ def useMeasure(valueS,valueC,jaro,jaroWinkler,identity,levenshtein,qGrams,monge_
     if jaro:
         sommeMeasure += compareLiteral(valueS,valueC, Jaro)
         compteur += 1
-        print(compteur)
     if jaroWinkler:
         sommeMeasure += compareLiteral(valueS,valueC, JaroWinkler)
         compteur += 1
-        print(compteur)
+
     if identity:
         sommeMeasure += compareLiteral(valueS,valueC, Identity)
         compteur += 1
@@ -298,7 +293,7 @@ def fMeasure(precision, recall):
     return 2 * ((precision * recall) / (precision + recall))
 
 #compare(("http://data.doremus.org/ontology#U11_has_key",),  0.1, (2,))
-dic=compare(("http://erlangen-crm.org/current/P102_has_title",),  0.05, (0,1,2,3,4,5,6))
+dic=compare(("http://erlangen-crm.org/current/P102_has_title",),  0.2, (0,))
 openResultFile(dic)
 # # for d in dic:
 # #     print(d)
