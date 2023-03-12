@@ -100,12 +100,12 @@ labelSeuil = tk.Label(canvas, text="Seuil :", bg="#263D42", fg="#FFFF00")
 canvas.create_window(70, 300, window=labelSeuil)
 seuilEntree = tk.Entry(canvas, bg="white", width=7)
 canvas.create_window(120, 300, window=seuilEntree)
-seuilValider = tk.Button(canvas,
-                         text="Add",
-                         width=5,
-                         height=1,
-                         command=validerSeuil)
-canvas.create_window(170, 300, window=seuilValider)
+#seuilValider = tk.Button(canvas,
+#                         text="Add",
+#                         width=5,
+#                         height=1,
+#                         command=validerSeuil)
+#canvas.create_window(170, 300, window=seuilValider)
 
 #propretyButton = tk.Button(canvas,
 #                           text="Choix des propriétés",
@@ -189,7 +189,7 @@ checkMongeElkan = tk.Checkbutton(canvas,
 canvas.create_window(480, 320, window=checkMongeElkan)
 
 confirmButton = tk.Button(root, text="Confirmer",
-                          command=lambda: confirm(propertySelected, pont.getSeuil(), pont.getListSimilarity()))
+                          command=lambda: [validerSeuil(),confirm(propertySelected, pont.getSeuil(), pont.getListSimilarity())])
 confirmButton.pack()
 
 root.mainloop()
