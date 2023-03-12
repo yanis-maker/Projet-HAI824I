@@ -53,13 +53,6 @@ def validerCible():
   pont.setFichierCible(filepath)
 
 
-def validerAlign():
-  filepath = filedialog.askopenfilename(title="Ouvrir un fichier d'alignement")
-  cibleEntree.delete(0, tk.END)
-  cibleEntree.insert(0, filepath)
-  pont.setFichierAlign(filepath)
-
-
 def validerSeuil():
   valeurSeuil = seuilEntree.get()
   pont.setSeuil(valeurSeuil)
@@ -68,6 +61,8 @@ def validerSeuil():
 def on_checked(checkbox_var, checkbox_int):
     if checkbox_var.get():
         pont.addListSimilarity(checkbox_int)
+    else:
+        pont.removeListSimilarity(checkbox_int)
 
 
 root = tk.Tk()
@@ -99,18 +94,6 @@ cibleValider = tk.Button(canvas,
                          height=1,
                          command=validerCible)
 canvas.create_window(450, 50, window=cibleValider)
-
-# Alignement
-labelAlign = tk.Label(canvas, text="Fichier cible :", bg="#263D42", fg="#FFFF00")
-canvas.create_window(60, 80, window=labelAlign)
-alignEntree = tk.Entry(canvas, bg="white", width=50)
-canvas.create_window(260, 80, window=alignEntree)
-alignValider = tk.Button(canvas,
-                         text="Add",
-                         width=5,
-                         height=1,
-                         command=validerAlign)
-canvas.create_window(450, 80, window=alignValider)
 
 # Seuil
 labelSeuil = tk.Label(canvas, text="Seuil :", bg="#263D42", fg="#FFFF00")
@@ -162,46 +145,46 @@ varMongeElkan = tk.BooleanVar()
 # A faire dans une boucle car plus propre si le temps
 checkIdentity = tk.Checkbutton(canvas, text="Identity",
                                variable=varIdentity,
-                               bg="#263D42", fg="#FFFF00",
+                               bg="#263D42", fg="#FFFF00", selectcolor="black",
                                command=lambda: on_checked(varIdentity, 2))
 canvas.create_window(480, 200, window=checkIdentity)
 
 checkQgrams = tk.Checkbutton(canvas, text="Qgrams",
                              variable=varQgrams,
-                             bg="#263D42", fg="#FFFF00",
+                             bg="#263D42", fg="#FFFF00", selectcolor="black",
                              command=lambda: on_checked(varQgrams, 4))
 canvas.create_window(480, 220, window=checkQgrams)
 
 checkJaccard = tk.Checkbutton(canvas, text="Jaccard",
                               variable=varJaccard,
-                              bg="#263D42", fg="#FFFF00",
+                              bg="#263D42", fg="#FFFF00", selectcolor="black",
                               command=lambda: on_checked(varJaccard, 6))
 canvas.create_window(480, 240, window=checkJaccard)
 
 checkJaro = tk.Checkbutton(canvas, text="Jaro",
                            variable=varJaro,
-                           bg="#263D42", fg="#FFFF00",
+                           bg="#263D42", fg="#FFFF00", selectcolor="black",
                            command=lambda: on_checked(varJaro, 0))
 canvas.create_window(480, 260, window=checkJaro)
 
 checkJaroWinkler = tk.Checkbutton(canvas,
                                   text="JaroWinkler",
-                                  bg="#263D42", fg="#FFFF00",
                                   variable=varJaroWinkler,
+                                  bg="#263D42", fg="#FFFF00", selectcolor="black",
                                   command=lambda: on_checked(varJaroWinkler, 1))
 canvas.create_window(480, 280, window=checkJaroWinkler)
 
 checkLevenshtein = tk.Checkbutton(canvas,
                                   text="Levenshtein",
                                   variable=varLevenshtein,
-                                  bg="#263D42", fg="#FFFF00",
+                                  bg="#263D42", fg="#FFFF00", selectcolor="black",
                                   command=lambda: on_checked(varLevenshtein, 3))
 canvas.create_window(480, 300, window=checkLevenshtein)
 
 checkMongeElkan = tk.Checkbutton(canvas,
                                  text="Monge-Elkan",
                                  variable=varMongeElkan,
-                                 bg="#263D42", fg="#FFFF00",
+                                 bg="#263D42", fg="#FFFF00", selectcolor="black",
                                  command=lambda: on_checked(varMongeElkan, 5))
 canvas.create_window(480, 320, window=checkMongeElkan)
 

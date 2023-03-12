@@ -42,3 +42,7 @@ class Bridge:
 
   def addListSimilarity(self, valeur):
     self.listSimilarity.append(valeur)
+  
+  def removeListSimilarity(self, valeur):
+    while valeur in self.getListSimilarity():
+      self.getListSimilarity().remove(valeur)
