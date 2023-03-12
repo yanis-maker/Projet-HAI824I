@@ -47,9 +47,9 @@ def validerSeuil():
   pont.setSeuil(valeurSeuil)
 
 
-def on_checked(checkbox_var, checkbox_text):
+def on_checked(checkbox_var, checkbox_int):
     if checkbox_var.get():
-        pont.addListSimilarity(checkbox_text)
+        pont.addListSimilarity(checkbox_int)
 
 
 root = tk.Tk()
@@ -145,46 +145,46 @@ varMongeElkan = tk.BooleanVar()
 checkIdentity = tk.Checkbutton(canvas, text="Identity",
                                variable=varIdentity,
                                bg="#263D42", fg="#FFFF00",
-                               command=lambda: on_checked(varIdentity, "Identity"))
+                               command=lambda: on_checked(varIdentity, 2))
 canvas.create_window(350, 200, window=checkIdentity)
 
 checkQgrams = tk.Checkbutton(canvas, text="Qgrams",
                              variable=varQgrams,
                              bg="#263D42", fg="#FFFF00",
-                             command=lambda: on_checked(varQgrams, "Qgrams"))
+                             command=lambda: on_checked(varQgrams, 4))
 canvas.create_window(350, 220, window=checkQgrams)
 
 checkJaccard = tk.Checkbutton(canvas, text="Jaccard",
                               variable=varJaccard,
                               bg="#263D42", fg="#FFFF00",
-                              command=lambda: on_checked(varJaccard, "Jaccard"))
+                              command=lambda: on_checked(varJaccard, 6))
 canvas.create_window(350, 240, window=checkJaccard)
 
 checkJaro = tk.Checkbutton(canvas, text="Jaro",
                            variable=varJaro,
                            bg="#263D42", fg="#FFFF00",
-                           command=lambda: on_checked(varJaro, "Jaro"))
+                           command=lambda: on_checked(varJaro, 0))
 canvas.create_window(350, 260, window=checkJaro)
 
 checkJaroWinkler = tk.Checkbutton(canvas,
                                   text="JaroWinkler",
                                   bg="#263D42", fg="#FFFF00",
                                   variable=varJaroWinkler,
-                                  command=lambda: on_checked(varJaroWinkler, "JaroWinkler"))
+                                  command=lambda: on_checked(varJaroWinkler, 1))
 canvas.create_window(350, 280, window=checkJaroWinkler)
 
 checkLevenshtein = tk.Checkbutton(canvas,
                                   text="Levenshtein",
                                   variable=varLevenshtein,
                                   bg="#263D42", fg="#FFFF00",
-                                  command=lambda: on_checked(varLevenshtein, "Levenshtein"))
+                                  command=lambda: on_checked(varLevenshtein, 3))
 canvas.create_window(350, 300, window=checkLevenshtein)
 
 checkMongeElkan = tk.Checkbutton(canvas,
                                  text="Monge-Elkan",
                                  variable=varMongeElkan,
                                  bg="#263D42", fg="#FFFF00",
-                                 command=lambda: on_checked(varMongeElkan, "Monge-Elkan"))
+                                 command=lambda: on_checked(varMongeElkan, 5))
 canvas.create_window(350, 320, window=checkMongeElkan)
 
 confirmButton = tk.Button(root, text="Confirmer")
