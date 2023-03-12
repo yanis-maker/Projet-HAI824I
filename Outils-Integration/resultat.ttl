@@ -1,9 +1,16 @@
 @prefix owl: < http: // www.w3.org / 2002 / 07 / owl  # >
-<http://data.doremus.org/expression/1a5bd434-4f48-3736-8292-d18a17f3d3c9>owl:sameAs<http://data.doremus.org/expression/9be811f7-1a05-38d8-b42e-c9c7a1cdf8c7>
-<http://data.doremus.org/expression/1a5bd434-4f48-3736-8292-d18a17f3d3c9>owl:sameAs<http://data.doremus.org/expression/9be811f7-1a05-38d8-b42e-c9c7a1cdf8c7>
-<http://data.doremus.org/expression/f2df1eeb-77ba-3274-a805-d9f0af7ad1e0>owl:sameAs<http://data.doremus.org/expression/9be811f7-1a05-38d8-b42e-c9c7a1cdf8c7>
-<http://data.doremus.org/expression/449d6f66-b868-367f-89b4-d03df8543cd8>owl:sameAs<http://data.doremus.org/expression/9be811f7-1a05-38d8-b42e-c9c7a1cdf8c7>
-<http://data.doremus.org/expression/51606c26-1544-3081-b1dc-9fe5a0278190>owl:sameAs<http://data.doremus.org/expression/9be811f7-1a05-38d8-b42e-c9c7a1cdf8c7>
-<http://data.doremus.org/expression/aed0815c-d793-359e-afe7-758216b1a90f>owl:sameAs<http://data.doremus.org/expression/9be811f7-1a05-38d8-b42e-c9c7a1cdf8c7>
-<http://data.doremus.org/expression/885df709-ecf5-3dc8-b69b-c327a9601e70>owl:sameAs<http://data.doremus.org/expression/9be811f7-1a05-38d8-b42e-c9c7a1cdf8c7>
-<http://data.doremus.org/expression/b318bf3d-4929-30ae-89fb-7f4336324b4e>owl:sameAs<http://data.doremus.org/expression/9be811f7-1a05-38d8-b42e-c9c7a1cdf8c7>
+<http://data.doremus.org/expression/1a5bd434-4f48-3736-8292-d18a17f3d3c9>owl:sameAs<http://data.doremus.org/expression/8098c838-5316-3b41-821b-5e6e05be05e8>
+<http://data.doremus.org/expression/1a5bd434-4f48-3736-8292-d18a17f3d3c9>owl:sameAs<http://data.doremus.org/expression/81c76715-9280-3fe7-8940-e44011edba7f>
+<http://data.doremus.org/expression/1a5bd434-4f48-3736-8292-d18a17f3d3c9>owl:sameAs<http://data.doremus.org/expression/17b6405a-21df-39b9-b91c-817edfbdefb5>
+<http://data.doremus.org/expression/1a5bd434-4f48-3736-8292-d18a17f3d3c9>owl:sameAs<http://data.doremus.org/expression/0d404069-e238-3af7-952f-3b7c79503d38>
+<http://data.doremus.org/expression/1a5bd434-4f48-3736-8292-d18a17f3d3c9>owl:sameAs<http://data.doremus.org/expression/541ecddc-759f-371e-aba1-77295a27651d>
+<http://data.doremus.org/expression/1a5bd434-4f48-3736-8292-d18a17f3d3c9>owl:sameAs<http://data.doremus.org/expression/f827686c-c3ae-3972-b314-cf6e7fb49dd8>
+<http://data.doremus.org/expression/1a5bd434-4f48-3736-8292-d18a17f3d3c9>owl:sameAs<http://data.doremus.org/expression/fff342e8-32ff-31bf-a258-ba0db7b078e5>
+<http://data.doremus.org/expression/1a5bd434-4f48-3736-8292-d18a17f3d3c9>owl:sameAs<http://data.doremus.org/expression/6f9c4f48-3925-370a-8599-4ece14578148>
+<http://data.doremus.org/expression/1a5bd434-4f48-3736-8292-d18a17f3d3c9>owl:sameAs<http://data.doremus.org/expression/cb398bee-82bc-30d0-9f77-ec8a379bd94b>
+<http://data.doremus.org/expression/b5538672-31a0-342a-8b4b-a421bef03124>owl:sameAs<http://data.doremus.org/expression/bd66e4dd-5d9d-3eea-b0ca-0b57cbff655c>
+<http://data.doremus.org/expression/f2df1eeb-77ba-3274-a805-d9f0af7ad1e0>owl:sameAs<http://data.doremus.org/expression/ef2b7376-ab03-353b-95d7-52ea04e3633f>
+<http://data.doremus.org/expression/449d6f66-b868-367f-89b4-d03df8543cd8>owl:sameAs<http://data.doremus.org/expression/782ad7d5-82ff-35ea-ad7d-fa9ba2f78e33>
+<http://data.doremus.org/expression/872a9eb8-51f3-3fe0-9694-9e2042c1b667>owl:sameAs<http://data.doremus.org/expression/065ddfe7-beb2-359d-a2c7-e5195bb9bc37>
+<http://data.doremus.org/expression/c6d549f1-eadb-33fb-919e-0359271ceb69>owl:sameAs<http://data.doremus.org/expression/21133315-2c7f-3a3e-b976-b2d3428d4318>
+<http://data.doremus.org/expression/d0a35099-ac44-367a-abdc-2ba3aac61c11>owl:sameAs<http://data.doremus.org/expression/30ed6938-e4c1-3fd6-a124-be0dbb7e9e9b>

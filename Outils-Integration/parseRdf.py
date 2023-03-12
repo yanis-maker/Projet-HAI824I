@@ -163,32 +163,32 @@ def compare(propertiesList, seuilChoosed, measuresList):
             for ressourceC, valueC in listCible:
                 sommeMeasure=0
                 compteur=0
-                #if not isinstance(ressourceC, BNode) and not isinstance(ressourceS, BNode) and isinstance(valueC,rdflib.term.Literal) and isinstance(valueS, rdflib.term.Literal):
-                    # print(prop)
-                if jaro:
-                    sommeMeasure += compareLiteral(valueS, valueC, Jaro)
-                    compteur += 1
-                    print(compteur)
-                if jaroWinkler:
-                    sommeMeasure += compareLiteral(valueS, valueC, JaroWinkler)
-                    compteur += 1
-                    print(compteur)
-                if identity:
-                    sommeMeasure += compareLiteral(valueS, valueC, Identity)
-                    compteur += 1
-                if levenshtein:
-                    sommeMeasure += compareLiteral(valueS, valueC, Levenshtein)
-                    compteur += 1
-                if qGrams:
-                    sommeMeasure += compareLiteral(valueS, valueC, QGrams)
-                    compteur += 1
-                if monge_elkan:
-                    sommeMeasure += compareLiteral(valueS, valueC, Monge_elkan)
-                    compteur += 1
-                if jaccard:
-                    sommeMeasure += compareLiteral(valueS, valueC, Jaccard)
-                    compteur += 1
-            valuesCompare.append((ressourceS, ressourceC,sommeMeasure,compteur))
+                if isinstance(valueC,rdflib.term.Literal) and isinstance(valueS, rdflib.term.Literal):
+                    #print(prop)
+                    if jaro:
+                        sommeMeasure += compareLiteral(valueS, valueC, Jaro)
+                        compteur += 1
+                        print(compteur)
+                    if jaroWinkler:
+                        sommeMeasure += compareLiteral(valueS, valueC, JaroWinkler)
+                        compteur += 1
+                        print(compteur)
+                    if identity:
+                        sommeMeasure += compareLiteral(valueS, valueC, Identity)
+                        compteur += 1
+                    if levenshtein:
+                        sommeMeasure += compareLiteral(valueS, valueC, Levenshtein)
+                        compteur += 1
+                    if qGrams:
+                        sommeMeasure += compareLiteral(valueS, valueC, QGrams)
+                        compteur += 1
+                    if monge_elkan:
+                        sommeMeasure += compareLiteral(valueS, valueC, Monge_elkan)
+                        compteur += 1
+                    if jaccard:
+                        sommeMeasure += compareLiteral(valueS, valueC, Jaccard)
+                        compteur += 1
+                    valuesCompare.append((ressourceS, ressourceC,sommeMeasure,compteur))
     i=0
     size=len(valuesCompare)
     somme=0
@@ -276,10 +276,10 @@ def fMeasure(precision, recall):
     return 2 * ((precision * recall) / (precision + recall))
 
 
-dic = compare(("http://erlangen-crm.org/current/P102_has_title",),  0.1, (0,1,3))
-openResultFile(dic)
-# for d in dic:
-#     print(d)
+# dic = compare(("http://erlangen-crm.org/current/P102_has_title",),  0.1, (0,))
+# openResultFile(dic)
+# # for d in dic:
+# #     print(d)
 print(calculPrecisionRappel())
 
 
