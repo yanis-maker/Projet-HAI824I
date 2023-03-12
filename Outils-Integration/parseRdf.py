@@ -230,9 +230,6 @@ def openResultFile(dicRessourceIdentique):
 
 def calculPrecisionRappel():
     true_positives = 0
-    false_positives = 0
-    false_negatives = 0
-    # TODO comparer les deux fichiers en terme des ressources et calcul des 3 variables déclarées ci-dessus
     fileRef = open('referenceFile', 'r')
     fileResult = open('resultat.ttl', 'r')
     lignesRef = fileRef.readlines()
@@ -261,15 +258,9 @@ def calculPrecisionRappel():
     for couple in ressourcesSimRes:
         #print(couple)
         if couple in ressourcesSimRef:
-            true_positives += 1
-    # for co in ressourcesSimRef:
-    #     print(co)
-
-    # PAS ENCORE FINI
-    # precision = true_positives / (true_positives + false_positives)
-    # recall = true_positives / (true_positives + false_negatives)
-    precision = true_positives / total1
-    recall = true_positives / total2
+            true_positives += 1         
+    precision = true_positives / total2
+    recall = true_positives / total1
     return [precision, recall]
 
 def fMeasure(precision, recall):
