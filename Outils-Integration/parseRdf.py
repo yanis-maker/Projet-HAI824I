@@ -4,7 +4,7 @@ from rdflib import Namespace, URIRef, Literal, BNode
 import SPARQLWrapper
 from SPARQLWrapper import SPARQLWrapper, JSON
 from rdflib.plugins.sparql import prepareQuery
-from measures import Jaro,JaroWinkler,Identity,Levenshtein,QGrams,Monge_elkan
+from measures import Jaro,JaroWinkler,Identity,Levenshtein,QGrams,Monge_elkan,Jaccard
 import re
 
 grapheSource = rdf.Graph()
@@ -136,6 +136,7 @@ def compare(propertiesList, seuilChoosed, measuresList):
     levenshtein=False
     qGrams=False
     monge_elkan=False
+    jaccard=False
     for measure in measuresList:
        print("hi")
        if measure==0:
@@ -183,6 +184,9 @@ def compare(propertiesList, seuilChoosed, measuresList):
                     compteur += 1
                 if monge_elkan:
                     sommeMeasure += compareLiteral(valueS, valueC, Monge_elkan)
+                    compteur += 1
+                if jaccard:
+                    sommeMeasure += compareLiteral(valueS, valueC, Jaccard)
                     compteur += 1
             valuesCompare.append((ressourceS, ressourceC,sommeMeasure,compteur))
     i=0
@@ -272,10 +276,10 @@ def fMeasure(precision, recall):
     return 2 * ((precision * recall) / (precision + recall))
 
 
-dic = compare(("http://erlangen-crm.org/current/P102_has_title",),  0.1, (0,))
+dic = compare(("http://erlangen-crm.org/current/P102_has_title",),  0.1, (0,1,3))
 openResultFile(dic)
 # for d in dic:
 #     print(d)
-calculPrecisionRappel()
+print(calculPrecisionRappel())
 
 

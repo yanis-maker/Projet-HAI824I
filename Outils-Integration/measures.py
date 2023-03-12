@@ -1,12 +1,10 @@
 import nltk
+import py_stringmatching
 from nltk.metrics.distance import jaro_winkler_similarity
-#from py_stringmatching import Jaccard
+from py_stringmatching import Jaccard
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 from scipy.spatial.distance import hamming
-
-
-
 
 def QGrams(str1,str2):
     n=3
@@ -29,14 +27,14 @@ def Identity(str1,str2):
     else :
         return 0.0
 
-# def jaccard(self,expr1,expr2):
-#     n=3
-#     expr1=expr1.lower()
-#     expr2=expr2.lower()
-#     ngrams1=set(nltk.ngrams(expr1,n))
-#     ngrams2=set(nltk.ngrams(expr2,n))
-#     extJaccard=Jaccard()
-#     return extJaccard.get_sim_score(ngrams1,ngrams2)
+def Jaccard(expr1,expr2):
+    n=3
+    expr1=expr1.lower()
+    expr2=expr2.lower()
+    ngrams1=set(nltk.ngrams(expr1,n))
+    ngrams2=set(nltk.ngrams(expr2,n))
+    extJaccard=Jaccard()
+    return extJaccard.get_sim_score(ngrams1,ngrams2)
 
 def Jaro(str1, str2):
     len_str1 = len(str1)
