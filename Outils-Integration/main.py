@@ -19,17 +19,24 @@ def get_last_part_of_url(urls):
         last_parts.append(url.split('/')[-1])
     return last_parts
 
+def find_url_by_last_part(urls, last_part):#Fonction inverse de get_last_part_of_url
+    """Renvoie l'URL complète correspondante à la partie finale donnée"""
+    for url in urls:
+        if url.endswith(last_part):
+            return url
+    return None
+
 def confirm(properties, seuil, measures):
     result = parseRdf.compare(properties, seuil, measures)
     parseRdf.openResultFile(result)
 
 def selectionProp():
     select = listbox_properties.get()
-    if(select not in propertySelected):
-      propertySelected.append(select)
+    if(find_url_by_last_part(parseRdf.getAllProperty(),select) not in propertySelected):
+      propertySelected.append(find_url_by_last_part(parseRdf.getAllProperty(),select))
       varProperties.set("\n".join(propertySelected))
       #label_propSelected.config(text="Propriétés sélectionnées :\n" + varProperties.get())
-      listbox_propSelect['values'] = propertySelected
+      listbox_propSelect['values'] = get_last_part_of_url(propertySelected)
       print("Vous avez sélectionné : ", propertySelected)
 
 def validerSource():
@@ -66,7 +73,7 @@ def on_checked(checkbox_var, checkbox_int):
 root = tk.Tk()
 root.title("Outil intégration de données")
 
-canvas = tk.Canvas(root, height=500, width=500, bg="#263D42")
+canvas = tk.Canvas(root, height=600, width=600, bg="#263D42")
 canvas.pack()
 
 # Fichier source
@@ -129,19 +136,19 @@ canvas.create_window(120, 200,window=label_properties)
 #label_properties.pack()
 
 # Création de la liste déroulante contenant les propriétés communes
-listbox_properties = combo = ttk.Combobox(root,  values=get_last_part_of_url(parseRdf.getAllProperty()),width=len(max(parseRdf.getAllProperty(),key=len)))
-canvas.create_window(120, 220,window=listbox_properties)
+listbox_properties = combo = ttk.Combobox(root,  values=get_last_part_of_url(parseRdf.getAllProperty()),width=len(max(get_last_part_of_url(parseRdf.getAllProperty()),key=len)))
+canvas.create_window(190, 220,window=listbox_properties)
 
 varProperties = StringVar()
 #label_propSelected = tk.Label(root, text="Propriétés selectionné : \n"+varProperties.get(), bg="#263D42", fg="#FFFF00")
 label_propSelected = tk.Label(root, text="Propriétés selectionné : ", bg="#263D42", fg="#FFFF00")
 canvas.create_window(120, 240,window=label_propSelected)
 
-listbox_propSelect = ttk.Combobox(root, values = get_last_part_of_url(propertySelected),width=len(max(parseRdf.getAllProperty(),key=len)))
-canvas.create_window(120, 260,window=listbox_propSelect)
+listbox_propSelect = ttk.Combobox(root, values = get_last_part_of_url(propertySelected),width=len(max(get_last_part_of_url(parseRdf.getAllProperty()),key=len)))
+canvas.create_window(190, 260,window=listbox_propSelect)
 #Bouton pour ajouter une propriété a selectionner
 addPorpertyButton = tk.Button(canvas, text="Add", bg="white", command=selectionProp)
-canvas.create_window(210, 220, window=addPorpertyButton)
+canvas.create_window(390, 220, window=addPorpertyButton)
 
 
 varIdentity = tk.BooleanVar()
@@ -157,46 +164,46 @@ checkIdentity = tk.Checkbutton(canvas, text="Identity",
                                variable=varIdentity,
                                bg="#263D42", fg="#FFFF00",
                                command=lambda: on_checked(varIdentity, 2))
-canvas.create_window(350, 200, window=checkIdentity)
+canvas.create_window(480, 200, window=checkIdentity)
 
 checkQgrams = tk.Checkbutton(canvas, text="Qgrams",
                              variable=varQgrams,
                              bg="#263D42", fg="#FFFF00",
                              command=lambda: on_checked(varQgrams, 4))
-canvas.create_window(350, 220, window=checkQgrams)
+canvas.create_window(480, 220, window=checkQgrams)
 
 checkJaccard = tk.Checkbutton(canvas, text="Jaccard",
                               variable=varJaccard,
                               bg="#263D42", fg="#FFFF00",
                               command=lambda: on_checked(varJaccard, 6))
-canvas.create_window(350, 240, window=checkJaccard)
+canvas.create_window(480, 240, window=checkJaccard)
 
 checkJaro = tk.Checkbutton(canvas, text="Jaro",
                            variable=varJaro,
                            bg="#263D42", fg="#FFFF00",
                            command=lambda: on_checked(varJaro, 0))
-canvas.create_window(350, 260, window=checkJaro)
+canvas.create_window(480, 260, window=checkJaro)
 
 checkJaroWinkler = tk.Checkbutton(canvas,
                                   text="JaroWinkler",
                                   bg="#263D42", fg="#FFFF00",
                                   variable=varJaroWinkler,
                                   command=lambda: on_checked(varJaroWinkler, 1))
-canvas.create_window(350, 280, window=checkJaroWinkler)
+canvas.create_window(480, 280, window=checkJaroWinkler)
 
 checkLevenshtein = tk.Checkbutton(canvas,
                                   text="Levenshtein",
                                   variable=varLevenshtein,
                                   bg="#263D42", fg="#FFFF00",
                                   command=lambda: on_checked(varLevenshtein, 3))
-canvas.create_window(350, 300, window=checkLevenshtein)
+canvas.create_window(480, 300, window=checkLevenshtein)
 
 checkMongeElkan = tk.Checkbutton(canvas,
                                  text="Monge-Elkan",
                                  variable=varMongeElkan,
                                  bg="#263D42", fg="#FFFF00",
                                  command=lambda: on_checked(varMongeElkan, 5))
-canvas.create_window(350, 320, window=checkMongeElkan)
+canvas.create_window(480, 320, window=checkMongeElkan)
 
 confirmButton = tk.Button(root, text="Confirmer",
                           command=lambda: confirm(propertySelected, pont.getSeuil(), pont.getListSimilarity()))
