@@ -80,13 +80,7 @@ def getAllProperty():
             if ps != pc and pc not in commonProprety:
                 commonProprety.append(pc)
 
-    # commonProprety.remove("http://data.doremus.org/ontology#U13_has_casting")
-    # commonProprety.remove("http://data.doremus.org/ontology#U17_has_opus_statement")
-    # commonProprety.remove("http://data.doremus.org/ontology#U16_has_catalogue_statement")
-    # commonProprety.remove("http://erlangen-crm.org/current/P67_refers_to")
-
     return commonProprety
-#commonProprety=["Title","Key","Note","Composer","Genre","Opus",""]
 
 def isValueMus(prop,uri):
     if str(prop)==uriU11:
@@ -179,9 +173,6 @@ def getSubObjSource(property, graph):
     return results
 
 
-
-#getSubObjSource("http://erlangen-crm.org/current/P102_has_title",grapheSource)
-
 def compare(propertiesList, seuilChoosed, measuresList):
     jaro=False
     jaroWinkler=False
@@ -203,6 +194,8 @@ def compare(propertiesList, seuilChoosed, measuresList):
            qGrams=True
        elif measure==5 :
             monge_elkan=True
+       elif measure==6:
+           jaccard=True
     valuesCompare = []
     listFinaleMeasure = []
     for prop in propertiesList:
@@ -214,9 +207,7 @@ def compare(propertiesList, seuilChoosed, measuresList):
                 sommeMeasure=0
                 compteur=0
                 if (not isinstance(valueC, BNode) and not isinstance(valueS, BNode)):
-                    #print(valueS + "    ############    " + valueC)
                     if isinstance(valueC, rdflib.term.Literal) and isinstance(valueS, rdflib.term.Literal):
-                        # print(prop)
                         res = useMeasure(str(valueS), str(valueC), jaro, jaroWinkler, identity, levenshtein, qGrams,
                                          monge_elkan,jaccard)
                         valuesCompare.append((ressourceS, ressourceC, res))
@@ -248,7 +239,6 @@ def compare(propertiesList, seuilChoosed, measuresList):
                     somme += valuej[2]
                     compteur += 1
                     del valuesCompare[j]
-                    # print(str(ressourceSi)+"   "+str(ressourceCi)+" ======  "+str(somme)+"     "+str(compteur))
             j += 1
         moyenne = somme / compteur
         print(moyenne)
@@ -256,7 +246,6 @@ def compare(propertiesList, seuilChoosed, measuresList):
             listFinaleMeasure.append([ressourceSi, ressourceCi, moyenne])
         i = i + 1
 
-        # for li in listFinaleMeasure
     return listFinaleMeasure
 
 def useMeasure(valueS,valueC,jaro,jaroWinkler,identity,levenshtein,qGrams,monge_elkan,jaccard):
@@ -281,9 +270,9 @@ def useMeasure(valueS,valueC,jaro,jaroWinkler,identity,levenshtein,qGrams,monge_
     if monge_elkan:
         sommeMeasure += compareLiteral(valueS,valueC, Monge_elkan)
         compteur += 1
-    # if jaccard:
-    #     sommeMeasure += compareLiteral(valueS,valueC, Jaccard)
-    #     compteur += 1
+    if jaccard:
+        sommeMeasure += compareLiteral(valueS,valueC, Jaccard)
+        compteur += 1
     return sommeMeasure/compteur
 
 
@@ -324,7 +313,6 @@ def calculPrecisionRappel():
     total1 = len(ressourcesSimRef)
     total2 = len(ressourcesSimRes)
     for couple in ressourcesSimRes:
-        #print(couple)
         if couple in ressourcesSimRef:
             true_positives += 1         
     precision = true_positives / total1
@@ -332,146 +320,5 @@ def calculPrecisionRappel():
     f_measure=2 * (precision * recall) / (precision + recall)
     return [precision, recall,f_measure]
 
-# dic=compare(("http://erlangen-crm.org/current/P102_has_title",),0.6, (1,))
-# openResultFile(dic)
-# # for d in dic:
-# #     print(d)
-print(calculPrecisionRappel())
-
-# def getKeys(expression,graphe):
-#     req = """
-#             PREFIX mus: <http://data.doremus.org/ontology#>
-#             PREFIX ecrm: <http://erlangen-crm.org/current/>
-#             PREFIX efrbroo: <http://erlangen-crm.org/efrbroo/>
-#             PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-#             SELECT ?expression ?key
-#             WHERE {
-#               ?expression mus:U11_has_key ?key .
-#               FILTER (isIRI(?key))
-#             }
-#         """
-#
-#     qres = graphe.query(req, initBindings={'expression': expression})
-#     result = []
-#
-#     for row in qres:
-#         result.append(str(row.key))
-#
-#     return result;
-#
-# def getTitles(expression,graphe):
-#     req = """
-#            PREFIX mus: <http://data.doremus.org/ontology#>
-#            PREFIX ecrm: <http://erlangen-crm.org/current/>
-#            PREFIX efrbroo: <http://erlangen-crm.org/efrbroo/>
-#            PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-#            SELECT ?expression ?title
-#            WHERE {
-#                ?expression ecrm:P102_has_title ?title .
-#            }
-#        """
-#
-#     qres = graphe.query(req, initBindings={'expression': expression})
-#     result = []
-#
-#     for row in qres:
-#         result.append(str(row.title))
-#
-#     return result;
-# def getOpus(expression,graphe):
-#     req = """
-#            PREFIX mus: <http://data.doremus.org/ontology#>
-#            PREFIX ecrm: <http://erlangen-crm.org/current/>
-#            PREFIX efrbroo: <http://erlangen-crm.org/efrbroo/>
-#            PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-#            SELECT ?expression ?opus
-#            WHERE {
-#              ?expression mus:U17_has_opus_statement / mus:U42_has_opus_number ?opus .
-#            }
-#        """
-#
-#     qres = graphe.query(req, initBindings={'expression': expression})
-#     result = []
-#
-#     for row in qres:
-#         result.append(str(row.opus))
-#
-#     return result;
-# def getComposer(expression,graphe):
-#     req = """
-#            PREFIX mus: <http://data.doremus.org/ontology#>
-#            PREFIX ecrm: <http://erlangen-crm.org/current/>
-#            PREFIX efrbroo: <http://erlangen-crm.org/efrbroo/>
-#            PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-#            SELECT ?expression ?composer
-#            WHERE {
-#              ?expression a efrbroo:F22_Self-Contained_Expression .
-#              ?expCreation efrbroo:R17_created ?expression ;
-#                ecrm:P9_consists_of / ecrm:P14_carried_out_by ?composer ;
-#            }
-#        """
-#
-#     qres = graphe.query(req, initBindings={'expression': expression})
-#     result = []
-#
-#     for row in qres:
-#         result.append(str(row.composer))
-#
-#     return result;
-# def getNotes(expression,graphe):
-#     req = """
-#             PREFIX mus: <http://data.doremus.org/ontology#>
-#             PREFIX ecrm: <http://erlangen-crm.org/current/>
-#             PREFIX efrbroo: <http://erlangen-crm.org/efrbroo/>
-#             PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-#             SELECT ?expression ?note
-#             WHERE {
-#               ?expression ecrm:P3_has_note ?note .
-#             }
-#         """
-#
-#     qres = graphe.query(req, initBindings={'expression': expression})
-#     result = []
-#
-#     for row in qres:
-#         result.append(str(row.note))
-#
-#     return result;
-# def getGenres(expression,graphe):
-#     req = """
-#             PREFIX mus: <http://data.doremus.org/ontology#>
-#             PREFIX ecrm: <http://erlangen-crm.org/current/>
-#             PREFIX efrbroo: <http://erlangen-crm.org/efrbroo/>
-#             PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-#             SELECT ?expression ?genre
-#             WHERE {
-#               ?expression mus:U12_has_genre ?genre .
-#               FILTER (isIRI(?genre))
-#             }
-#         """
-#
-#     result1 = graphe.query(req, initBindings={'expression': expression})
-#     result = []
-#
-#     req2 = """
-#             PREFIX mus: <http://data.doremus.org/ontology#>
-#             PREFIX ecrm: <http://erlangen-crm.org/current/>
-#             PREFIX efrbroo: <http://erlangen-crm.org/efrbroo/>
-#             PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-#             SELECT ?expression ?genre
-#             WHERE {
-#               ?expression mus:U12_has_genre / ecrm:P1_is_identified_by ?genre .
-#             }
-#         """
-#
-#     result2 = graphe.query(req2, initBindings={'expression': expression})
-#
-#     for row in result1:
-#         result.append(str(row.genre).split("/")[-1].replace("_", " "))
-#
-#     for row in result2:
-#         result.append(str(row.genre))
-#
-#     return result;
 
 
