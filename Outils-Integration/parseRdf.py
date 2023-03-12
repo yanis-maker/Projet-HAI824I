@@ -289,15 +289,13 @@ def calculPrecisionRappel():
         #print(couple)
         if couple in ressourcesSimRef:
             true_positives += 1         
-    precision = true_positives / total2
-    recall = true_positives / total1
-    return [precision, recall]
-
-def fMeasure(precision, recall):
-    return 2 * ((precision * recall) / (precision + recall))
+    precision = true_positives / total1
+    recall = true_positives / total2
+    f_measure=2 * (precision * recall) / (precision + recall)
+    return [precision, recall,f_measure]
 
 #compare(("http://data.doremus.org/ontology#U11_has_key",),  0.1, (2,))
-dic=compare(("http://erlangen-crm.org/current/P102_has_title",),  0.2, (0,))
+dic=compare(("http://erlangen-crm.org/current/P102_has_title",),  0.65, (0,))
 openResultFile(dic)
 # # for d in dic:
 # #     print(d)
