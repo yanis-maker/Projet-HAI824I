@@ -177,15 +177,20 @@ def compare(propertiesList, seuilChoosed, measuresList):
             for ressourceC, valueC in listCible:
                 sommeMeasure=0
                 compteur=0
-                if isinstance(valueC,rdflib.term.Literal) and isinstance(valueS, rdflib.term.Literal):
-                    #print(prop)
-                    res=useMeasure(str(valueS),str(valueC),jaro,jaroWinkler,identity,levenshtein,qGrams,monge_elkan)
-                    valuesCompare.append((ressourceS, ressourceC,res[1],res[0]))
-                elif isinstance(valueS,URIRef) and isinstance(valueC,URIRef) and isValueMus(prop,valueS):
-                    valueSTokend=Tokenisation(valueS)
-                    valueCTokend=Tokenisation(valueC)
-                    res=useMeasure(valueSTokend,valueCTokend,jaro,jaroWinkler,identity,levenshtein,qGrams,monge_elkan)
-                    valuesCompare.append((ressourceS, ressourceC, res[1], res[0]))
+                if (not isinstance(valueC, BNode) and not isinstance(valueS, BNode)):
+                    print(valueS + "    ############    " + valueC)
+                    if isinstance(valueC, rdflib.term.Literal) and isinstance(valueS, rdflib.term.Literal):
+                        # print(prop)
+                        res = useMeasure(str(valueS), str(valueC), jaro, jaroWinkler, identity, levenshtein, qGrams,
+                                         monge_elkan)
+                        valuesCompare.append((ressourceS, ressourceC, res[1], res[0]))
+                    elif isinstance(valueS, URIRef) and isinstance(valueC, URIRef) and isValueMus(prop, valueS):
+                        valueSTokend = Tokenisation(valueS)
+                        valueCTokend = Tokenisation(valueC)
+                        res = useMeasure(valueSTokend, valueCTokend, jaro=0, jaroWinkler=0, identity=1, levenshtein=0,
+                                         qGrams=0, monge_elkan=0)
+                        valuesCompare.append((ressourceS, ressourceC, res[1], res[0]))
+
     i=0
     size=len(valuesCompare)
     somme=0
@@ -292,9 +297,9 @@ def calculPrecisionRappel():
 def fMeasure(precision, recall):
     return 2 * ((precision * recall) / (precision + recall))
 
-
-# dic = compare(("http://erlangen-crm.org/current/P102_has_title",),  0.1, (0,))
-# openResultFile(dic)
+#compare(("http://data.doremus.org/ontology#U11_has_key",),  0.1, (2,))
+dic=compare(("http://erlangen-crm.org/current/P102_has_title",),  0.05, (0,1,2,3,4,5,6))
+openResultFile(dic)
 # # for d in dic:
 # #     print(d)
 print(calculPrecisionRappel())
